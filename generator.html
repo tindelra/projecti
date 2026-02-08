@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Link Generator</title>
+    <style>
+        :root {
+            --primary: #8B0000;
+            --text: #333;
+            --bg: #f5f5f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+
+        h1 {
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            resize: vertical;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+
+        button.generate-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        button.generate-btn:hover {
+            opacity: 0.9;
+        }
+
+        .output-list {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .link-item {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+        }
+
+        .guest-name {
+            font-weight: bold;
+            width: 200px;
+            padding-right: 15px;
+        }
+
+        .guest-link {
+            flex-grow: 1;
+            color: #666;
+            font-size: 0.9em;
+            word-break: break-all;
+            padding-right: 15px;
+        }
+
+        .copy-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            background: #218838;
+        }
+
+        .copy-btn.copied {
+            background: #6c757d;
+        }
+
+        .wa-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            white-space: nowrap;
+            margin-left: 8px;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .wa-btn:hover {
+            background: #128C7E;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            white-space: nowrap;
+            margin-left: 8px;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Invitation Link Generator</h1>
+
+        <div class="input-group">
+            <label for="names">Paste Guest Names (one per line):</label>
+            <textarea id="names" placeholder="Alice&#10;Bob Smith&#10;Charlie"></textarea>
+        </div>
+
+        <button class="generate-btn" onclick="generateLinks()">Generate Links</button>
+
+        <div class="output-list" id="output"></div>
+    </div>
+
+    <script>
+        // REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
+        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5usBJ-mo5AbMtLYKsoitLDRWn0TuYJNGRBHLSY3djKzuwxS6GgUZlH9l2pL1E-gdc/exec';
+
+        function generateLinks() {
+            const input = document.getElementById('names').value;
+            const output = document.getElementById('output');
+            const lines = input.split('\n');
+            const existingNames = new Set();
+
+            // Collect existing names to avoid duplicates
+            document.querySelectorAll('.guest-name').forEach(el => existingNames.add(el.innerText));
+
+            // Get base URL (remove generator.html from path)
+            let baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
+            // Ensure trailing slash if strictly root, though substring usually handles it
+            if (!baseUrl.endsWith('/')) baseUrl += '/';
+            // Point to the wedding-invitation folder
+            baseUrl += 'wedding-invitation/';
+
+            // If user opened generator.html, we want the link to point to index.html (or root)
+            // If baseUrl ends in wedding-invitation/, it's perfect.
+
+            // Do NOT clear output.innerHTML to keep previous results
+            // output.innerHTML = '';
+
+            lines.forEach(line => {
+                const name = line.trim();
+                if (name && !existingNames.has(name)) {
+                    const encodedName = encodeURIComponent(name);
+                    const link = `${baseUrl}?to=${encodedName}`;
+
+                    const item = document.createElement('div');
+                    item.className = 'link-item';
+
+                    item.innerHTML = `
+                        <div class="guest-name">${name}</div>
+                        <div class="guest-link">${link}</div>
+                        <button class="copy-btn" onclick="copyLink(this, '${link}')">Copy Link</button>
+                        <button class="wa-btn" onclick="shareToWhatsapp('${name}', '${link}')">Share via WA</button>
+                        <button class="delete-btn" onclick="deleteLink(this)">Delete</button>
+                    `;
+
+                    output.appendChild(item);
+
+                    // Add to existing set to prevent duplicates in this same run
+                    existingNames.add(name);
+
+                    // Save to Google Sheet
+                    saveToSheet(name, link, 'save');
+                }
+            });
+        }
+
+        async function copyLink(btn, text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const originalText = btn.innerText;
+                btn.innerText = 'Copied!';
+                btn.classList.add('copied');
+
+                setTimeout(() => {
+                    btn.innerText = originalText;
+                    btn.classList.remove('copied');
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy to clipboard');
+            }
+        }
+
+        function shareToWhatsapp(name, link) {
+            // Polite message template
+            const message = `Kepada Yth. *${name}*,
+
+Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.
+
+Berikut link undangan kami:
+${link}
+
+Merupakan suatu kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
+
+Terima kasih.
+
+Hormat kami,
+Ardella & Krisna`;
+
+            const encodedMessage = encodeURIComponent(message);
+            const waUrl = `https://wa.me/?text=${encodedMessage}`;
+            window.open(waUrl, '_blank');
+        }
+
+        function deleteLink(btn) {
+            const item = btn.closest('.link-item');
+            if (item) {
+                const name = item.querySelector('.guest-name').innerText;
+                const link = item.querySelector('.guest-link').innerText;
+
+                // Remove from DOM
+                item.remove();
+
+                // Remove from Sheet
+                saveToSheet(name, link, 'delete');
+            }
+        }
+
+        function saveToSheet(name, link, action = 'save') {
+            if (SHEET_SCRIPT_URL === 'YOUR_WEB_APP_URL_HERE') {
+                console.warn('Google Sheet URL not set. Data not saved.');
+                return;
+            }
+
+            fetch(SHEET_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors', // 'no-cors' is required for Google Apps Script Web App without easier OAuth
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: name, link: link, action: action })
+            }).then(() => {
+                console.log(`Request (${action}) sent for ${name}`);
+            }).catch(err => {
+                console.error(`Error sending (${action}) request:`, err);
+            });
+        }
+    </script>
+</body>
+
+</html>
