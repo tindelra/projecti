@@ -1,0 +1,204 @@
+/* Butler */
+@font-face {
+    font-family: "Butler Bold";
+    src: url('../media/fonts/Butler_Bold.otf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Butler Light";
+    src: url('../media/fonts/Butler_Light.otf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "Butler Regular";
+    src: url('../media/fonts/Butler_Regular.otf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Bebas Neue */
+@font-face {
+    font-family: "Bebas Neue";
+    src: url('../media/fonts/BebasNeue_Regular.otf');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Root */
+:root {
+    color-scheme: light dark;
+    --primary-clr: #452812;
+    --primary-dark-clr: #371e0b;
+    --secondary-clr: #f6eed7;
+    --tertiary-clr: #d4cfc2;
+    --wood-clr: #d9b680;
+    --dark-clr: #000000;
+    --dark-rgb: 0, 0, 0;
+    --light-clr: #fafafa;
+    --light-rgb: 250, 250, 250;
+    --info-clr: #1a8cb8;
+    --info-rgb: 26, 140, 184;
+    --sea-clr: #4455aa;
+    --sea-rgb: 68, 85, 170;
+    --smoke-clr: #878787;
+    --smoke-rgb: 135, 135, 135;
+    --white-clr: #ffffff;
+    --white-rgb: 255, 255, 255;
+    --success-clr: #35ac07;
+    --success-rgb: 53, 172, 7;
+    --error-clr: #ff4143;
+    --error-rgb: 255, 65, 67;
+    --font-clr: #464646;
+    --rgb-font-clr: 70, 70, 70;
+    --btn-default: #d4cfc2;
+    --btn-default-rgb: 212, 207, 194;
+
+    --roboto: 'Roboto', sans-serif;
+    --butler-bold: 'Butler Bold', sans-serif;
+    --butler-light: 'Butler Light', sans-serif;
+    --butler: 'Butler Regular', sans-serif;
+    --bebas-neue: 'Bebas Neue', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body * {
+    word-wrap: break-word;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body,
+html {
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    scroll-behavior: smooth;
+}
+
+body {
+    --heading-family: var(--roboto);
+    --heading-style: normal;
+    --heading-weight: 500;
+    --heading-size: 32px;
+    --heading-lettercase: none;
+    --body-text-family: var(--roboto);
+    --body-text-style: normal;
+    --body-text-weight: 400;
+    --body-text-size: 16px;
+    --body-text-lettercase: none;
+    --background-primary: #ffffff;
+    --background-primary-rgb: 255, 255, 255;
+    --background-secondary: #ffffff;
+    --background-secondary-rgb: 255, 255, 255;
+    --background-tertiary: #ffffff;
+    --background-tertiary-rgb: 255, 255, 255;
+    --text-primary: #000000;
+    --text-primary-rgb: 0, 0, 0;
+    --text-secondary: #000000;
+    --text-secondary-rgb: 0, 0, 0;
+    --text-tertiary: #000000;
+    --text-tertiary-rgb: 0, 0, 0;
+    --button-text-primary: #ffffff;
+    --button-text-primary-rgb: 255, 255, 255;
+    --button-background-primary: #000000;
+    --button-background-primary-rgb: 0, 0, 0;
+    -webkit-overflow-scrolling: touch;
+}
+
+div,
+input,
+textarea,
+select,
+button,
+a {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+p>a,
+label>a {
+    color: #4455aa !important;
+    text-decoration: none !important;
+    font-style: italic !important;
+}
+
+p>a:hover,
+label>a:hover {
+    text-decoration: underline !important;
+}
+
+/* FOOTER */
+.footer {
+    width: 100%;
+    background: var(--background-primary);
+    padding: 5px;
+}
+
+.footer .footer-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 12px;
+}
+
+.footer .footer-inner p {
+    font-size: 16px;
+    color: var(--text-secondary);
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+/* MUSIC OUTER */
+.music-outer {
+    position: fixed;
+    z-index: 999;
+    bottom: 15px;
+    left: 15px;
+    display: inline-block;
+}
+
+.music-outer .music-box {
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    background-image: url("../media/images/music.png");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+    transition: all .8s cubic-bezier(.23, .56, .38, .78);
+}
+
+.music-outer .music-box.playing {
+    animation: play-music 20s linear infinite;
+}
+
+@keyframes play-music {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .music-outer .music-box {
+        width: 45px;
+        height: 45px;
+    }
+}

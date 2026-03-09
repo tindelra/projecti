@@ -1,0 +1,663 @@
+/* 
+ * TABLE OF CONTENTS
+ * 1. GLOBAL STYLES
+ * 2. TEMPLATE CUSTOM STYLES
+ * 3. PAGE-SPECIFIC STYLES
+ */
+
+/* ==========================================================================
+   SECTION: GLOBAL STYLES
+   ========================================================================== */
+
+/* Source: /src/universal.css?1770021110 */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* Butler */
+@font-face {
+    font-family: "Butler Bold";
+    src: url("../fonts/Butler_Bold_7d1572d8.otf") format('opentype');
+    font-display: swap;
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Butler Light";
+    src: url("../fonts/Butler_Light_7b0f739b.otf") format('opentype');
+    font-display: swap;
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Butler Regular";
+    src: url("../fonts/Butler_Regular_5570eaf8.otf") format('opentype');
+    font-display: swap;
+    font-style: normal;
+    font-weight: normal;
+}
+
+/* Bebas Neue */
+@font-face {
+    font-family: "Bebas Neue";
+    src: url("../fonts/BebasNeue_Regular_a3cef97e.otf") format('opentype');
+    font-display: swap;
+    font-style: normal;
+    font-weight: normal;
+}
+
+/* Raleway */
+@font-face {
+    font-family: "Raleway Regular";
+    src: url("../fonts/Raleway-Regular_9049400c.ttf") format('truetype');
+    font-display: swap;
+    font-style: normal;
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Raleway Bold";
+    src: url("../fonts/Raleway-Bold_ba30167e.ttf") format('truetype');
+    font-display: swap;
+    font-style: normal;
+    font-weight: normal;
+}
+
+
+
+:root {
+    /* Hex Colour */
+    --primary-clr: #452812;
+    --secondary-clr: #f6eed7;
+    --tertiary-clr: #d4cfc2;
+    --wood-clr: #d9b680;
+    --dark-clr: #000000;
+    --light-clr: #fafafa;
+    --info-clr: #1a8cb8;
+    --breadcumb-clr: #EB2F59;
+
+    --mellow-apricot: #F1C380;
+    --dark-chestnut: #916958;
+
+    --primary-dark-clr: #371e0b;
+    --sea-clr: #4455aa;
+    --smoke-clr: #878787;
+    --white-clr: #ffffff;
+
+    --success-clr: #5cb85c;
+    --success-light-clr: #b5d9b4;
+    --error-clr: #d9534f;
+    --error-dark-clr: #d82121;
+    --error-light-clr: #f6bdc0;
+
+
+    /* RGB Colour */
+    --rgb-primary-clr: 69, 40, 18;
+    --rgb-secondary-clr: 246, 238, 215;
+    --rgb-tertiary-clr: 212, 207, 194;
+    --rgb-wood-clr: 217, 182, 128;
+
+    --primary-rgb: 69, 40, 18;
+    --secondary-rgb: 246, 238, 215;
+    --tertiary-rgb: 212, 207, 194;
+    --wood-rgb: 217, 182, 128;
+    --dark-rgb: 0, 0, 0;
+    --light-rgb: 250, 250, 250;
+    --info-rgb: 26, 140, 184;
+
+    --mellow-apricot-rgb: 241, 195, 128;
+    --dark-chestnut-rgb: 145, 105, 88;
+
+    --primary-dark-rgb: 55, 30, 11;
+    --sea-rgb: 68, 85, 170;
+    --smoke-rgb: 135, 135, 135;
+    --white-rgb: 255, 255, 255;
+
+    --success-rgb: 92, 184, 92;
+    --success-light-rgb: 181, 217, 180;
+    --error-rgb: 217, 83, 79;
+    --error-dark-rgb: 216, 33, 33;
+    --error-light-rgb: 246, 189, 192;
+
+
+
+    /* Font Family */
+    --montserrat: 'Montserrat', sans-serif;
+    --roboto: 'Roboto', sans-serif;
+
+    --butler: 'Butler Regular', sans-serif;
+    --butler-bold: 'Butler Bold', sans-serif;
+    --butler-light: 'Butler Light', sans-serif;
+    --bebas-neue: 'Bebas Neue', sans-serif;
+
+    --raleway: 'Raleway Regular', sans-serif;
+    --raleway-bold: 'Raleway Bold', sans-serif;
+
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #eee;
+    text-rendering: optimizeLegibility;
+}
+
+body font {
+    font-family: inherit;
+}
+
+*::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+*::-webkit-scrollbar-track {
+    background: #fafafa;
+    /* color of the tracking area */
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: var(--wood-clr);
+    /* color of the scroll thumb */
+    border-radius: 20px;
+    /* roundness of the scroll thumb */
+    border: 1px solid #fafafa;
+    /* creates padding around scroll thumb */
+}
+
+body::-webkit-scrollbar {
+    width: 14px;
+    /* width of the entire scrollbar */
+    height: 14px;
+}
+
+body::-webkit-scrollbar-thumb,
+textarea::-webkit-scrollbar-thumb {
+    border-width: 2px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: var(--roboto);
+}
+
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+ul,
+ol {
+    list-style: none;
+    margin: 0;
+}
+
+button:focus,
+button:hover {
+    outline: none;
+}
+
+
+/* NProgress */
+#nprogress .bar {
+    background: var(--wood-clr);
+    z-index: 999999999999;
+}
+
+#nprogress .peg {
+    box-shadow: 0 0 10px var(--wood-clr), 0 0 5px var(--wood-clr);
+}
+
+#nprogress .spinner-icon {
+    border-top-color: var(--wood-clr);
+    border-left-color: var(--wood-clr);
+}
+
+
+
+/* Remove the blue background of button on mobile */
+
+div,
+input,
+textarea,
+button,
+select,
+a {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+img {
+    image-rendering: -moz-crisp-edges;
+    /* Firefox */
+    image-rendering: -o-crisp-edges;
+    /* Opera */
+    image-rendering: -webkit-optimize-contrast;
+    /* Webkit (non-standard naming) */
+    image-rendering: crisp-edges;
+    -ms-interpolation-mode: nearest-neighbor;
+    /* IE (non-standard property) */
+}
+
+
+/* Container */
+
+.cont {
+    width: 100%;
+    min-height: 100vh;
+}
+
+.lg-outer,
+.lg-backdrop {
+    z-index: 999999;
+}
+
+
+/* ========================================
+        LDS Facebook
+======================================== */
+.lds-facebook {
+    display: inline-block;
+    position: relative;
+    width: 50px;
+    height: 60px;
+}
+
+.lds-facebook div {
+    display: inline-block;
+    position: absolute;
+    left: 5px;
+    width: 10px;
+    background: #fff;
+    animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+}
+
+.lds-facebook div:nth-child(1) {
+    left: 5px;
+    animation-delay: -0.24s;
+}
+
+.lds-facebook div:nth-child(2) {
+    left: 20px;
+    animation-delay: -0.12s;
+}
+
+.lds-facebook div:nth-child(3) {
+    left: 35px;
+    animation-delay: 0;
+}
+
+@keyframes lds-facebook {
+    0% {
+        top: 4px;
+        height: 56px;
+    }
+
+    50%,
+    100% {
+        top: 16px;
+        height: 28px;
+    }
+}
+
+
+
+/* ========================================
+        LDS Spinner
+======================================== */
+.lds-spinner {
+    color: official;
+    display: inline-block;
+    position: relative;
+    width: 46px;
+    height: 46px;
+}
+
+.lds-spinner div {
+    transform-origin: 23px 23px;
+    animation: lds-spinner 1.2s linear infinite;
+}
+
+.lds-spinner div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 2px;
+    left: 21px;
+    width: 4px;
+    height: 12px;
+    border-radius: 22%;
+    background: #fff;
+}
+
+.lds-spinner div:nth-child(1) {
+    transform: rotate(0deg);
+    animation-delay: -1.1s;
+}
+
+.lds-spinner div:nth-child(2) {
+    transform: rotate(30deg);
+    animation-delay: -1s;
+}
+
+.lds-spinner div:nth-child(3) {
+    transform: rotate(60deg);
+    animation-delay: -0.9s;
+}
+
+.lds-spinner div:nth-child(4) {
+    transform: rotate(90deg);
+    animation-delay: -0.8s;
+}
+
+.lds-spinner div:nth-child(5) {
+    transform: rotate(120deg);
+    animation-delay: -0.7s;
+}
+
+.lds-spinner div:nth-child(6) {
+    transform: rotate(150deg);
+    animation-delay: -0.6s;
+}
+
+.lds-spinner div:nth-child(7) {
+    transform: rotate(180deg);
+    animation-delay: -0.5s;
+}
+
+.lds-spinner div:nth-child(8) {
+    transform: rotate(210deg);
+    animation-delay: -0.4s;
+}
+
+.lds-spinner div:nth-child(9) {
+    transform: rotate(240deg);
+    animation-delay: -0.3s;
+}
+
+.lds-spinner div:nth-child(10) {
+    transform: rotate(270deg);
+    animation-delay: -0.2s;
+}
+
+.lds-spinner div:nth-child(11) {
+    transform: rotate(300deg);
+    animation-delay: -0.1s;
+}
+
+.lds-spinner div:nth-child(12) {
+    transform: rotate(330deg);
+    animation-delay: 0s;
+}
+
+@keyframes lds-spinner {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+
+
+/* =======================================
+    NAVBAR
+======================================= */
+
+.navbar-outer {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    transition: all 0.35s ease-in-out;
+    /* background-color: lightcoral; */
+}
+
+
+/* Scrolled */
+
+.navbar-outer.scrolled {
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Scrolled and Blurry */
+
+.navbar-outer.scrolled.blur {
+    background: transparent;
+    box-shadow: none;
+}
+
+.navbar-outer.scrolled.blur,
+.navbar-outer.scrolled.blur::before,
+.navbar-outer.scrolled.blur::after {
+    transition: all 0.25s ease-in-out;
+}
+
+.navbar-outer.scrolled.blur::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* background-color: #fff; */
+    backdrop-filter: blur(6px);
+}
+
+.navbar-outer.scrolled.blur::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+
+/* Navbar Inner */
+
+.navbar-inner {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px 25px;
+    margin: 0;
+    position: relative;
+    z-index: 1;
+    /* background-color: lightgoldenrodyellow; */
+}
+
+.navbar-outer .navbar-inner .register-outer {
+    display: none;
+}
+
+.navbar-outer .navbar-inner .register-outer a.register,
+.navbar-outer .navbar-inner .register-outer a.register:focus {
+    padding: 4px 8px 1px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--white-clr);
+    text-decoration: none;
+    font-family: "Bebas Neue";
+    font-size: 22px;
+    letter-spacing: 1px;
+    border-radius: 7px;
+    border: 2px solid var(--wood-clr);
+    color: var(--primary-clr);
+    margin: 0;
+    transition: all 0.25s ease-in-out;
+    /* New */
+    background: #fff;
+    border: 2px solid #ef9918;
+    color: var(--primary-clr);
+}
+
+.navbar-outer .navbar-inner .register-outer a.register i {
+    margin-left: 7px;
+    font-size: 17px;
+}
+
+.navbar-outer .navbar-inner .register-outer a.register:hover {
+    background-color: var(--primary-clr);
+    border-color: var(--primary-clr);
+    color: var(--white-clr);
+    /* New */
+    background: #000;
+    border-color: #000;
+    color: #fff;
+}
+
+.navbar-inner .nv-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: auto;
+}
+
+.navbar-inner .nv-btn {
+    align-content: center;
+    display: none;
+}
+
+.navbar-inner .nv-btn button {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    font-size: 30px;
+    color: var(--primary-clr);
+}
+
+.navbar-inner .nv-btn #open-navbar {
+    background-color: var(--white-clr);
+    padding: 3px 8px 1px 8px;
+    border-radius: 7px;
+    border: 2px solid var(--wood-clr);
+    font-size: 22px;
+    transition: all 0.25s ease-in-out;
+    /* New */
+    background: #fff;
+    border: 2px solid #fff;
+    color: var(--primary-clr);
+}
+
+.navbar-inner .nv-btn #open-navbar:hover {
+    background-color: var(--primary-clr);
+    border-color: var(--primary-clr);
+    color: var(--white-clr);
+    /* New */
+    background: #000;
+    border-color: #000;
+    color: #fff;
+}
+
+.navbar-inner .nv-links {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.navbar-inner .nv-logo {
+    margin-right: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* background-color: lightskyblue; */
+}
+
+.navbar-inner .nv-logo>div {
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.navbar-inner .nv-logo>div:last-of-type {
+    margin-right: 0;
+}
+
+.navbar-inner .nv-logo>div:first-of-type>a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.navbar-inner .nv-logo>div .logo {
+    width: 120px;
+    height: 45px;
+    object-fit: contain;
+    object-position: center;
+    display: block;
+}
+
+
+/* Logo SVG */
+
+.navbar-inner .nv-logo>div .logo.logo-svg * {
+    fill: var(--primary-clr);
+    transition: all 0.2s ease-in-out;
+}
+
+.navbar-inner .nv-logo>div .guide {
+    padding: 5px 16px 3px 16px;
+    outline: none;
+    border-radius: 12px;
+    border: 2px solid var(--secondary-clr);
+    background: #fff;
+    text-decoration: none;
+    color: var(--primary-clr);
+    font-size: 20px;
+    font-family: "Bebas Neue";
+    letter-spacing: 1px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: all 0.25s ease-in-out;
+}
+
+.navbar-inner .nv-logo>div .guide:hover {
+    background: var(--wood-clr);
+    color: var(--white-clr);
+    border-color: var(--wood-clr);
+}
+
+.navbar-inner .nv-logo>div .guide:focus {
+    background: var(--primary-clr);
+    color: var(--white-clr);
+    border-color: var(--primary-clr);
+}
+
+@media only screen and (max-width: 425px) {
+    .navbar-inner .nv-logo>div {
+        margin-right: 0.5em;
+    }
+
+    .navbar-inner .nv-logo>div .guide {
+        padding: 0.4em 0.75em 0.2em 0.75em;
+        font-size: 15px;
+        line-height: 1em;
+        margin-left: 1em;
+    }
+}
+
+.navbar-inner .nv-links ul {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
