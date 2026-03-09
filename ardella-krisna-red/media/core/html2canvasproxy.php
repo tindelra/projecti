@@ -1,1 +1,0 @@
-console.log("error: html2canvas-proxy-php: No such parameter \"url\"");
