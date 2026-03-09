@@ -149,6 +149,8 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                         .catch(err => console.error('Wish sheet error:', err));
                     // ---------------------------------
 
+                    window.MockBackend.saveWish(name, comment, attendanceMap[attendance] || attendance || null);
+
                     response.message = 'Ucapan Anda sedang diproses...';
                     isMocked = true;
                 }
@@ -161,8 +163,23 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                 fetch(`${SHEET_SCRIPT_URL}?action=loadComment&start=${start}&limit=${limit}&_t=${Date.now()}`)
                     .then(res => res.json())
                     .then(res => {
-                        if (res.commentItems && Array.isArray(res.commentItems)) {
-                            response.commentItems = window.MockBackend.formatCommentItems(res.commentItems);
+                        let sheetWishes = res.commentItems && Array.isArray(res.commentItems) ? res.commentItems : [];
+                        let itemsToFormat = sheetWishes;
+
+                        if (start == 0) {
+                            let localWishes = window.MockBackend.getWishes();
+                            let combined = [...localWishes, ...sheetWishes];
+                            let seen = new Set();
+                            itemsToFormat = combined.filter(w => {
+                                let key = w.name + '|' + w.comment;
+                                if (seen.has(key)) return false;
+                                seen.add(key);
+                                return true;
+                            });
+                        }
+
+                        if (itemsToFormat.length > 0) {
+                            response.commentItems = window.MockBackend.formatCommentItems(itemsToFormat);
                             response.nextComment = res.nextComment || 0;
                         } else {
                             response.commentItems = window.MockBackend.formatCommentItems([]);
