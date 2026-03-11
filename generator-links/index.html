@@ -179,6 +179,41 @@
         // REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
         const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5usBJ-mo5AbMtLYKsoitLDRWn0TuYJNGRBHLSY3djKzuwxS6GgUZlH9l2pL1E-gdc/exec';
 
+        // Load existing links on startup
+        window.addEventListener('DOMContentLoaded', loadLinksFromStorage);
+
+        function loadLinksFromStorage() {
+            const savedLinks = JSON.parse(localStorage.getItem('generated_links') || '[]');
+            const output = document.getElementById('output');
+            output.innerHTML = '';
+
+            savedLinks.forEach(item => {
+                appendLinkToDOM(item.name, item.link);
+            });
+        }
+
+        function appendLinkToDOM(name, link) {
+            const output = document.getElementById('output');
+            const item = document.createElement('div');
+            item.className = 'link-item';
+            item.innerHTML = `
+                <div class="guest-name">${name}</div>
+                <div class="guest-link">${link}</div>
+                <button class="copy-btn" onclick="copyLink(this, '${link}')">Copy Link</button>
+                <button class="wa-btn" onclick="shareToWhatsapp('${name}', '${link}')">Share via WA</button>
+                <button class="delete-btn" onclick="deleteLink(this)">Delete</button>
+            `;
+            output.appendChild(item);
+        }
+
+        function saveLinkLocally(name, link) {
+            const savedLinks = JSON.parse(localStorage.getItem('generated_links') || '[]');
+            if (!savedLinks.some(l => l.name === name)) {
+                savedLinks.push({ name, link });
+                localStorage.setItem('generated_links', JSON.stringify(savedLinks));
+            }
+        }
+
         function generateLinks() {
             const input = document.getElementById('names').value;
             const output = document.getElementById('output');
@@ -203,18 +238,8 @@
                     const encodedName = encodeURIComponent(name);
                     const link = `${baseUrl}?to=${encodedName}`;
 
-                    const item = document.createElement('div');
-                    item.className = 'link-item';
-
-                    item.innerHTML = `
-                        <div class="guest-name">${name}</div>
-                        <div class="guest-link">${link}</div>
-                        <button class="copy-btn" onclick="copyLink(this, '${link}')">Copy Link</button>
-                        <button class="wa-btn" onclick="shareToWhatsapp('${name}', '${link}')">Share via WA</button>
-                        <button class="delete-btn" onclick="deleteLink(this)">Delete</button>
-                    `;
-
-                    output.appendChild(item);
+                    appendLinkToDOM(name, link);
+                    saveLinkLocally(name, link);
 
                     // Add to existing set to prevent duplicates in this same run
                     existingNames.add(name);
@@ -277,6 +302,11 @@ Ardella dan Krisna`;
 
                 // Remove from DOM
                 item.remove();
+
+                // Remove from Local Storage
+                const savedLinks = JSON.parse(localStorage.getItem('generated_links') || '[]');
+                const filteredLinks = savedLinks.filter(l => l.name !== name);
+                localStorage.setItem('generated_links', JSON.stringify(filteredLinks));
 
                 // Remove from Sheet
                 saveToSheet(name, link, 'delete');
