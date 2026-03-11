@@ -25,11 +25,11 @@ window.MockBackend = {
     deleteWish: function (id, btn = null) {
         if (!confirm('Hapus komentar ini secara permanen?')) return;
 
-        // Visual feedback
-        const $btn = btn ? $(btn) : null;
-        if ($btn) {
+        // Visual feedback (with fallback to find button by ID)
+        let $btn = btn ? $(btn) : $(`.delete-btn[data-comment="${id}"]`);
+        if ($btn && $btn.length > 0) {
             $btn.html('<i class="fas fa-spinner fa-spin"></i> <small>Menghapus...</small>');
-            $btn.prop('disabled', true);
+            $btn.css('pointer-events', 'none');
         }
 
         // 1. Delete locally
@@ -1194,8 +1194,10 @@ $(document).ready(function () {
 // Global Admin Delete Handler
 $(document).on('click', '.delete-btn', function (e) {
     e.preventDefault();
+    e.stopImmediatePropagation(); // Prevent template.js from triggering a refresh
     const commentId = $(this).data('comment');
     if (commentId && window.MockBackend) {
         window.MockBackend.deleteWish(commentId, this);
     }
+    return false;
 });

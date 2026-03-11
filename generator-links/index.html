@@ -163,10 +163,10 @@
 <body>
 
     <div class="container">
-        <h1>Invitation Link Generator</h1>
+        <h1>Link Undangan</h1>
 
         <div class="input-group">
-            <label for="names">Paste Guest Names (one per line):</label>
+            <label for="names">Nama Tamu:</label>
             <textarea id="names" placeholder="Alice&#10;Bob Smith&#10;Charlie"></textarea>
         </div>
 
@@ -188,12 +188,8 @@
             // Collect existing names to avoid duplicates
             document.querySelectorAll('.guest-name').forEach(el => existingNames.add(el.innerText));
 
-            // Get base URL (remove generator.html from path)
-            let baseUrl = window.location.href.substring(0, window.location.href.lastIndexOf('/'));
-            // Ensure trailing slash if strictly root, though substring usually handles it
-            if (!baseUrl.endsWith('/')) baseUrl += '/';
-            // Point to the wedding-invitation folder
-            baseUrl += 'wedding-invitation/';
+            // Base URL for the wedding invitation
+            const baseUrl = 'https://goinvitation.site/ardella-krisna/';
 
             // If user opened generator.html, we want the link to point to index.html (or root)
             // If baseUrl ends in wedding-invitation/, it's perfect.
