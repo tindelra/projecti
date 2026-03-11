@@ -53,12 +53,29 @@ window.MockBackend = {
         localStorage.setItem('wedding_rsvp', JSON.stringify(rsvps));
     },
     formatCommentItems: function (wishes) {
-        if (!wishes || wishes.length === 0) return '<p class="text-center" style="padding: 20px; color: var(--text-secondary);">Tuliskan doa dan ucapan terbaik Anda untuk kami.</p>';
-
         const urlParams = new URLSearchParams(window.location.search);
-        // Change 'ardella123' to your preferred password
         const adminKey = 'ardella123';
         const isAdmin = urlParams.get('admin') === adminKey || urlParams.get('Admin') === adminKey || urlParams.get('admin') === 'true' || urlParams.get('Admin') === 'true';
+
+        if (!wishes || wishes.length === 0) {
+            let msg = '<p class="text-center" style="padding: 20px; color: var(--text-secondary);">Tuliskan doa dan ucapan terbaik Anda untuk kami.</p>';
+            if (isAdmin && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+                msg += '<p class="text-center" style="font-size: 0.8em; color: #8B0000; padding: 10px; background: #fff5f5; border-radius: 8px; margin: 0 15px 20px;"><b>Admin Note:</b> Komentar tidak muncul di localhost karena masalah CORS. Silakan cek di website live (goinvitation.site) atau nonaktifkan keamanan CORS di browser Anda untuk testing.</p>';
+            }
+            return msg;
+        }
+
+        // Change 'ardella123' to your preferred password
+
+        // Add visual indicator for Admin Mode
+        if (isAdmin && !document.getElementById('admin-badge')) {
+            const badge = document.createElement('div');
+            badge.id = 'admin-badge';
+            badge.innerHTML = 'Admin Mode Active 🔓';
+            badge.style.cssText = 'position: fixed; top: 10px; right: 10px; background: #8B0000; color: white; padding: 5px 15px; border-radius: 20px; font-family: sans-serif; font-size: 12px; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-weight: bold; pointer-events: none;';
+            document.body.appendChild(badge);
+            console.log('✅ Admin Mode Activated');
+        }
 
         return wishes.map(w => {
             const dateObj = new Date(w.date);
@@ -73,8 +90,8 @@ window.MockBackend = {
                         ${w.attendance === 'unable_to_attend' ? '<i class="fas fa-times-circle" style="color: #dc3545; font-size: 0.8em; margin-left: 5px;" title="Unable to Attend"></i>' : ''}
                     </span>
                     ${isAdmin ? `
-                    <span class="delete-btn" style="color: #d9534f; cursor: pointer; font-size: 0.9em;" data-delete="delete_comment" data-comment="${w.id}">
-                        <i class="fas fa-trash"></i>
+                    <span class="delete-btn" style="color: #d9534f; cursor: pointer; font-size: 0.9em; display: flex; align-items: center; gap: 4px;" data-delete="delete_comment" data-comment="${w.id}">
+                        <i class="fas fa-trash"></i> <small style="font-weight: bold;">Hapus</small>
                     </span>` : ''}
                 </div>
                 <div class="comment-date" style="font-size: 0.85em; color: #888; margin-bottom: 8px; font-family: var(--body-text-family);">
@@ -201,29 +218,33 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                         const json = await res.json();
                         const sheetWishes = (json.commentItems && Array.isArray(json.commentItems)) ? json.commentItems : [];
 
-                        let finalWishes = sheetWishes;
-                        if (start === 0) {
-                            const localWishes = window.MockBackend.getWishes();
-                            const combined = [...localWishes, ...sheetWishes];
-                            const seen = new Set();
-                            finalWishes = combined.filter(w => {
-                                const key = `${w.name}|${w.comment}`.toLowerCase().trim();
-                                if (seen.has(key)) return false;
-                                seen.add(key);
-                                return true;
-                            });
-                        }
+                        // 3. Merge and Sync
+                        const localWishes = window.MockBackend.getWishes();
+                        const finalWishes = [...localWishes];
+
+                        sheetWishes.forEach(item => {
+                            const exists = finalWishes.some(lw =>
+                                (lw.id && item.id && lw.id == item.id) ||
+                                (lw.name === item.name && lw.comment === item.comment)
+                            );
+                            if (!exists) {
+                                finalWishes.push({
+                                    name: item.name,
+                                    comment: item.comment,
+                                    attendance: item.attendance,
+                                    date: item.date,
+                                    id: item.id
+                                });
+                            }
+                        });
 
                         responseData.commentItems = window.MockBackend.formatCommentItems(finalWishes);
                         responseData.nextComment = json.nextComment || 0;
                     } catch (err) {
                         console.error('[CommentSync] Fetch error:', err);
-                        // Case: start > 0 and fetch failed, we don't want to clear what's already there
                         if (start === 0) {
                             const localWishes = window.MockBackend.getWishes();
                             responseData.commentItems = window.MockBackend.formatCommentItems(localWishes);
-                        } else {
-                            return; // Stop here if loading "more" fails
                         }
                     }
 
