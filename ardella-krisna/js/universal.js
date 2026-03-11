@@ -9,23 +9,37 @@ window.MockBackend = {
     getWishes: function () {
         return JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
     },
-    saveWish: function (name, comment, attendance = null) {
+    saveWish: function (name, comment, attendance = null, id = null) {
         const wishes = this.getWishes();
         const newWish = {
             name: name,
             comment: comment,
             attendance: attendance,
             date: new Date().toISOString(),
-            id: Date.now()
+            id: id || Date.now()
         };
         wishes.unshift(newWish);
         localStorage.setItem('wedding_wishes', JSON.stringify(wishes));
         return newWish;
     },
     deleteWish: function (id) {
+        // 1. Delete locally
         let wishes = this.getWishes();
         wishes = wishes.filter(w => w.id != id);
         localStorage.setItem('wedding_wishes', JSON.stringify(wishes));
+
+        // 2. Delete from Google Sheets
+        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMr-RJtThDfzWU58bI3JGk8acr7hdTtJg2UdLVmK-jWLor2MG_zWlnJbThKSWjWJaS/exec';
+        fetch(SHEET_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'deleteComment',
+                id: id
+            })
+        }).then(() => console.log('Delete request sent to sheet'))
+            .catch(err => console.error('Delete sheet error:', err));
     },
     getRSVPs: function () {
         return JSON.parse(localStorage.getItem('wedding_rsvp') || '[]');
@@ -42,7 +56,9 @@ window.MockBackend = {
         if (!wishes || wishes.length === 0) return '<p class="text-center" style="padding: 20px; color: var(--text-secondary);">Tuliskan doa dan ucapan terbaik Anda untuk kami.</p>';
 
         const urlParams = new URLSearchParams(window.location.search);
-        const isAdmin = urlParams.get('admin') === 'true' || urlParams.get('Admin') === 'true';
+        // Change 'ardella123' to your preferred password
+        const adminKey = 'ardella123';
+        const isAdmin = urlParams.get('admin') === adminKey || urlParams.get('Admin') === adminKey || urlParams.get('admin') === 'true' || urlParams.get('Admin') === 'true';
 
         return wishes.map(w => {
             const dateObj = new Date(w.date);
@@ -134,6 +150,7 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                         'unable_to_attend': 'Tidak Hadir'
                     };
 
+                    const wishId = Date.now();
                     fetch(SHEET_SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
@@ -143,13 +160,14 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                             name: name,
                             comment: comment,
                             attendance: attendanceMap[attendance] || attendance || 'Hadir',
-                            date: new Date().toLocaleString()
+                            date: new Date().toLocaleString(),
+                            id: wishId
                         })
                     }).then(() => console.log('Wish sent to sheet'))
                         .catch(err => console.error('Wish sheet error:', err));
                     // ---------------------------------
 
-                    window.MockBackend.saveWish(name, comment, attendanceMap[attendance] || attendance || null);
+                    window.MockBackend.saveWish(name, comment, attendanceMap[attendance] || attendance || null, wishId);
 
                     response.message = 'Ucapan Anda sedang diproses...';
                     isMocked = true;

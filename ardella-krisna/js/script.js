@@ -76,7 +76,8 @@ function initCountdown() {
 function initGuestName() {
     const urlParams = new URLSearchParams(window.location.search);
     const guestName = urlParams.get('to');
-    const isAdmin = urlParams.get('Admin') === 'true';
+    const adminKey = 'ardella123';
+    const isAdmin = urlParams.get('admin') === adminKey || urlParams.get('Admin') === adminKey || urlParams.get('admin') === 'true' || urlParams.get('Admin') === 'true';
 
     if (isAdmin || guestName) {
         // Convert dashes back to spaces for display
