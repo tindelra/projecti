@@ -23,6 +23,8 @@ window.MockBackend = {
         return newWish;
     },
     deleteWish: function (id) {
+        if (!confirm('Hapus komentar ini secara permanen?')) return;
+
         // 1. Delete locally
         let wishes = this.getWishes();
         wishes = wishes.filter(w => w.id != id);
@@ -30,6 +32,7 @@ window.MockBackend = {
 
         // 2. Delete from Google Sheets
         const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMr-RJtThDfzWU58bI3JGk8acr7hdTtJg2UdLVmK-jWLor2MG_zWlnJbThKSWjWJaS/exec';
+
         fetch(SHEET_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
@@ -38,8 +41,13 @@ window.MockBackend = {
                 action: 'deleteComment',
                 id: id
             })
-        }).then(() => console.log('Delete request sent to sheet'))
-            .catch(err => console.error('Delete sheet error:', err));
+        }).then(() => {
+            console.log('Delete request sent to sheet');
+            window.location.reload(); // Refresh to update list
+        }).catch(err => {
+            console.error('Delete sheet error:', err);
+            window.location.reload(); // Still reload to show local deletion
+        });
     },
     getRSVPs: function () {
         return JSON.parse(localStorage.getItem('wedding_rsvp') || '[]');
@@ -1136,5 +1144,14 @@ $(document).ready(function () {
             // Time intervals
             interval: 15,
         });
+    }
+});
+
+// Global Admin Delete Handler
+$(document).on('click', '.delete-btn', function (e) {
+    e.preventDefault();
+    const commentId = $(this).data('comment');
+    if (commentId && window.MockBackend) {
+        window.MockBackend.deleteWish(commentId);
     }
 });
