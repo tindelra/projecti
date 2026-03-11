@@ -29,7 +29,7 @@ var COVERS = [{
             " <img src=\"media/images/cover-desktop.png\" alt=\"\">\n" +
             "</div>",
         'mobile': "<div class=\"picture mobile\">\n" +
-            " <img src=\"media/images/cover-mobile.png\" alt=\"\">\n" +
+            " <img src=\"media/images/cover-mobile.webp\" alt=\"\">\n" +
             "</div>"
     },
     'element': '#cover-main'

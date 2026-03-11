@@ -156,51 +156,64 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                 }
             } else if (action === 'loadComment' || action === 'moreComment') {
                 const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5usBJ-mo5AbMtLYKsoitLDRWn0TuYJNGRBHLSY3djKzuwxS6GgUZlH9l2pL1E-gdc/exec';
-                const start = data.get('start') || 0;
-                const limit = data.get('limit') || 5;
+                const start = parseInt(data.get('start') || 0);
+                const limit = parseInt(data.get('limit') || 5);
 
-                // Sync with Google Sheets
-                fetch(`${SHEET_SCRIPT_URL}?action=loadComment&start=${start}&limit=${limit}&_t=${Date.now()}`)
-                    .then(res => res.json())
-                    .then(res => {
-                        let sheetWishes = res.commentItems && Array.isArray(res.commentItems) ? res.commentItems : [];
-                        let itemsToFormat = sheetWishes;
+                const fetchComments = async () => {
+                    let responseData = { error: false, message: 'Success', commentItems: '', nextComment: 0 };
 
-                        if (start == 0) {
-                            let localWishes = window.MockBackend.getWishes();
-                            let combined = [...localWishes, ...sheetWishes];
-                            let seen = new Set();
-                            itemsToFormat = combined.filter(w => {
-                                let key = w.name + '|' + w.comment;
+                    // 1. Initial Local Render (Only for fresh load)
+                    if (start === 0) {
+                        const localWishes = window.MockBackend.getWishes();
+                        if (localWishes.length > 0) {
+                            responseData.commentItems = window.MockBackend.formatCommentItems(localWishes);
+                            if (typeof onSuccess === 'function') onSuccess(responseData);
+                        }
+                    }
+
+                    // 2. Fetch from Sheet with Timeout
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+
+                    try {
+                        const fetchUrl = `${SHEET_SCRIPT_URL}?action=loadComment&start=${start}&limit=${limit}&_t=${Date.now()}`;
+                        const res = await fetch(fetchUrl, { signal: controller.signal });
+                        clearTimeout(timeoutId);
+
+                        const json = await res.json();
+                        const sheetWishes = (json.commentItems && Array.isArray(json.commentItems)) ? json.commentItems : [];
+
+                        let finalWishes = sheetWishes;
+                        if (start === 0) {
+                            const localWishes = window.MockBackend.getWishes();
+                            const combined = [...localWishes, ...sheetWishes];
+                            const seen = new Set();
+                            finalWishes = combined.filter(w => {
+                                const key = `${w.name}|${w.comment}`.toLowerCase().trim();
                                 if (seen.has(key)) return false;
                                 seen.add(key);
                                 return true;
                             });
                         }
 
-                        if (itemsToFormat.length > 0) {
-                            response.commentItems = window.MockBackend.formatCommentItems(itemsToFormat);
-                            response.nextComment = res.nextComment || 0;
+                        responseData.commentItems = window.MockBackend.formatCommentItems(finalWishes);
+                        responseData.nextComment = json.nextComment || 0;
+                    } catch (err) {
+                        console.error('[CommentSync] Fetch error:', err);
+                        // Case: start > 0 and fetch failed, we don't want to clear what's already there
+                        if (start === 0) {
+                            const localWishes = window.MockBackend.getWishes();
+                            responseData.commentItems = window.MockBackend.formatCommentItems(localWishes);
                         } else {
-                            response.commentItems = window.MockBackend.formatCommentItems([]);
-                            response.nextComment = 0;
+                            return; // Stop here if loading "more" fails
                         }
+                    }
 
-                        if (typeof beforeSend === 'function') beforeSend();
-                        setTimeout(() => {
-                            if (typeof onSuccess === 'function') onSuccess(response);
-                        }, 500);
-                    })
-                    .catch(err => {
-                        console.error('Fetch comments error:', err);
-                        response.commentItems = window.MockBackend.formatCommentItems([]);
-                        response.nextComment = 0;
-                        if (typeof beforeSend === 'function') beforeSend();
-                        setTimeout(() => {
-                            if (typeof onSuccess === 'function') onSuccess(response);
-                        }, 500);
-                    });
+                    if (typeof beforeSend === 'function') beforeSend();
+                    if (typeof onSuccess === 'function') onSuccess(responseData);
+                };
 
+                fetchComments();
                 return; // Handled async
             }
             else if (data.has('attendance') || data.has('rsvp_status')) {
