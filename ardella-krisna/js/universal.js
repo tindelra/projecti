@@ -80,8 +80,32 @@ window.MockBackend = {
             const badge = document.createElement('div');
             badge.id = 'admin-badge';
             badge.innerHTML = 'Admin Mode Active 🔓';
-            badge.style.cssText = 'position: fixed; top: 10px; right: 10px; background: #8B0000; color: white; padding: 5px 15px; border-radius: 20px; font-family: sans-serif; font-size: 12px; z-index: 9999; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-weight: bold; pointer-events: none;';
+            badge.style.cssText = 'position: fixed; top: 10px; right: 10px; background: #8B0000; color: white; padding: 5px 15px; border-radius: 20px; font-family: sans-serif; font-size: 12px; z-index: 10000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); font-weight: bold; pointer-events: none; user-select: none; -webkit-user-select: none;';
             document.body.appendChild(badge);
+
+            // Add CSS for delete button
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .delete-btn {
+                    background: none;
+                    border: none;
+                    padding: 8px;
+                    margin: -8px;
+                    cursor: pointer;
+                    user-select: none;
+                    -webkit-user-select: none;
+                    z-index: 999;
+                    position: relative;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 5px;
+                    color: #d9534f;
+                    transition: transform 0.2s;
+                }
+                .delete-btn:hover { transform: scale(1.1); color: #c9302c; }
+                .delete-btn:active { transform: scale(0.95); }
+            `;
+            document.head.appendChild(style);
             console.log('✅ Admin Mode Activated');
         }
 
@@ -98,9 +122,9 @@ window.MockBackend = {
                         ${w.attendance === 'unable_to_attend' ? '<i class="fas fa-times-circle" style="color: #dc3545; font-size: 0.8em; margin-left: 5px;" title="Unable to Attend"></i>' : ''}
                     </span>
                     ${isAdmin ? `
-                    <span class="delete-btn" style="color: #d9534f; cursor: pointer; font-size: 0.9em; display: flex; align-items: center; gap: 4px;" data-delete="delete_comment" data-comment="${w.id}">
+                    <button class="delete-btn" data-delete="delete_comment" data-comment="${w.id}">
                         <i class="fas fa-trash"></i> <small style="font-weight: bold;">Hapus</small>
-                    </span>` : ''}
+                    </button>` : ''}
                 </div>
                 <div class="comment-date" style="font-size: 0.85em; color: #888; margin-bottom: 8px; font-family: var(--body-text-family);">
                     ${dateStr}, ${timeStr}

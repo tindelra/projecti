@@ -248,19 +248,25 @@
 
         function shareToWhatsapp(name, link) {
             // Polite message template
-            const message = `Kepada Yth. *${name}*,
+            const message =
+                `Kepada Yth.
+Bapak/Ibu/Saudara/i 
+*${name}*
 
-Tanpa mengurangi rasa hormat, perkenankan kami mengundang Bapak/Ibu/Saudara/i untuk hadir di acara pernikahan kami.
+Assalamu’alaikum Warahmatullahi Wabarakatuh
+Salam sejahtera bagi kita semua,
 
-Berikut link undangan kami:
+Dengan penuh rasa syukur dan tanpa mengurangi rasa hormat, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir serta memberikan doa restu pada acara pernikahan kami.
+Untuk informasi lengkap mengenai waktu dan tempat acara, silakan mengakses undangan melalui tautan berikut:
+
 ${link}
 
-Merupakan suatu kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu.
-
-Terima kasih.
+Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan meluangkan waktu untuk hadir dan berbagi kebahagiaan bersama kami.
+Atas perhatian, kehadiran, dan doa restu yang diberikan, kami mengucapkan terima kasih.
+Wassalamu’alaikum Warahmatullahi Wabarakatuh
 
 Hormat kami,
-Ardella & Krisna`;
+Ardella dan Krisna`;
 
             const encodedMessage = encodeURIComponent(message);
             const waUrl = `https://wa.me/?text=${encodedMessage}`;
