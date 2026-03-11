@@ -22,8 +22,15 @@ window.MockBackend = {
         localStorage.setItem('wedding_wishes', JSON.stringify(wishes));
         return newWish;
     },
-    deleteWish: function (id) {
+    deleteWish: function (id, btn = null) {
         if (!confirm('Hapus komentar ini secara permanen?')) return;
+
+        // Visual feedback
+        const $btn = btn ? $(btn) : null;
+        if ($btn) {
+            $btn.html('<i class="fas fa-spinner fa-spin"></i> <small>Menghapus...</small>');
+            $btn.prop('disabled', true);
+        }
 
         // 1. Delete locally
         let wishes = this.getWishes();
@@ -43,10 +50,23 @@ window.MockBackend = {
             })
         }).then(() => {
             console.log('Delete request sent to sheet');
-            window.location.reload(); // Refresh to update list
+            if ($btn) {
+                $btn.closest('.comment-item').fadeOut(500, function () {
+                    $(this).remove();
+                });
+            } else {
+                window.location.reload();
+            }
         }).catch(err => {
             console.error('Delete sheet error:', err);
-            window.location.reload(); // Still reload to show local deletion
+            if ($btn) {
+                // Still remove locally even if sheet fails (user expects immediate action)
+                $btn.closest('.comment-item').fadeOut(500, function () {
+                    $(this).remove();
+                });
+            } else {
+                window.location.reload();
+            }
         });
     },
     getRSVPs: function () {
@@ -1176,6 +1196,6 @@ $(document).on('click', '.delete-btn', function (e) {
     e.preventDefault();
     const commentId = $(this).data('comment');
     if (commentId && window.MockBackend) {
-        window.MockBackend.deleteWish(commentId);
+        window.MockBackend.deleteWish(commentId, this);
     }
 });
