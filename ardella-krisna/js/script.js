@@ -62,8 +62,8 @@ function initCountdown() {
 
         const d = document.querySelector('.count-day');
         const h = document.querySelector('.count-hour');
-        const m = document.querySelector('.count-minute');
-        const s = document.querySelector('.count-second');
+        const m = document.querySelector('.count-min');
+        const s = document.querySelector('.count-sec');
 
         if (d) d.textContent = days;
         if (h) h.textContent = hours;

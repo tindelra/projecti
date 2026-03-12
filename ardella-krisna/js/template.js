@@ -497,13 +497,13 @@ var isCoverPlayed = false;
                 clearInterval(start);
                 $('.count-day').text('0');
                 $('.count-hour').text('0');
-                $('.count-minute').text('0');
-                $('.count-second').text('0');
+                $('.count-min').text('0');
+                $('.count-sec').text('0');
             } else {
                 $('.count-day').text(days);
                 $('.count-hour').text(hours);
-                $('.count-minute').text(minutes);
-                $('.count-second').text(seconds);
+                $('.count-min').text(minutes);
+                $('.count-sec').text(seconds);
             }
         }
     }
