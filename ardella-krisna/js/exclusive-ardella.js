@@ -69,7 +69,18 @@ $(document).ready(function () {
 
     if ($(".photo-slider").children().length > 0) {
         // Slick
-        $(".photo-slider").slick(photo_slider_options);
+        var $slider = $(".photo-slider");
+        $slider.slick(photo_slider_options);
+
+        // Mousewheel Scroll support
+        $slider.on('wheel', function (e) {
+            e.preventDefault();
+            if (e.originalEvent.deltaY > 0) {
+                $(this).slick('slickNext');
+            } else {
+                $(this).slick('slickPrev');
+            }
+        });
     }
 
     // RSVP Guest Counter (Handled in template.js)
