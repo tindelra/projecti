@@ -1348,7 +1348,6 @@ var AudioManager = {
         // Basic setup
         audio.loop = true;
         audio.preload = 'auto';
-        audio.crossOrigin = 'anonymous';
         audio.playsInline = true; // Important for iOS
 
         // Platform-specific setup
@@ -1474,10 +1473,8 @@ var AudioManager = {
                     const mainPromise = audio.play();
                     if (mainPromise) {
                         mainPromise.then(() => {
-                            if (!this.state.isMusicAttemptingToPlay && !this.state.isMusicPlayed) {
-                                audio.pause();
-                                audio.currentTime = 0;
-                            }
+                            audio.pause();
+                            audio.currentTime = 0;
                             this.state.isAudioUnlocked = true;
                             // console.log('iOS audio unlocked successfully');
                             resolve();
@@ -1503,10 +1500,8 @@ var AudioManager = {
 
             if (playPromise !== undefined) {
                 playPromise.then(() => {
-                    if (!this.state.isMusicAttemptingToPlay && !this.state.isMusicPlayed) {
-                        audio.pause();
-                        audio.currentTime = 0;
-                    }
+                    audio.pause();
+                    audio.currentTime = 0;
                     this.state.isAudioUnlocked = true;
 
                     // Also unlock Web Audio Context
@@ -1541,6 +1536,17 @@ var AudioManager = {
 
     // Enhanced play music with fade-in
     playMusic: function () {
+        if (!this.state.isAudioUnlocked) {
+            // console.log('Audio not unlocked, attempting unlock...');
+            this.unlockAudio().then(() => {
+                setTimeout(() => this.playMusic(), 100);
+            }).catch(error => {
+                console.log('Failed to unlock audio:', error);
+                this.pauseBoxAnimation();
+            });
+            return;
+        }
+
         if (this.state.isMusicAttemptingToPlay) {
             return; // Already attempting
         }
@@ -1563,7 +1569,6 @@ var AudioManager = {
 
         if (promise !== undefined) {
             promise.then(() => {
-                this.state.isAudioUnlocked = true;
                 this.state.isMusicPlayed = true;
                 this.state.isMusicAttemptingToPlay = false;
                 this.playBoxAnimation();
