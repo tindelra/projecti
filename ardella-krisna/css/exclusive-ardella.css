@@ -1832,6 +1832,12 @@ section.love-story .story-inner {
     min-width: unset;
 }
 
+@media (max-width : 960px) {
+    .photo-wrap .ornaments-wrapper {
+        display: none !important;
+    }
+}
+
 @media (min-width : 561px) and (max-width: 960px) {
     .photo-slider .photo-img-wrap {
         height: 150px;
