@@ -9,8 +9,8 @@ var MUSIC = {
     'box': '#music-box'
 };
 
-// Event Date (January 31, 2026 11:00 AM)
-var EVENT = new Date('2026-03-25T11:00:00').getTime() / 1000;
+// Event Date (March 25, 2026 09:00 AM)
+var EVENT = new Date('2026-03-25T09:00:00').getTime() / 1000;
 
 // Bank Options
 var BANK_OPTIONS = [
