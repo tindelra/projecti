@@ -1287,12 +1287,11 @@ var AudioManager = {
         isMusicAttemptingToPlay: false,
         isMusicPlayed: false,
         isAudioUnlocked: false,
-        audioContext: null,
         backgroundMusic: null,
         retryAttempts: 0,
         maxRetries: 3,
-        loopStartTime: window?.CROPPED_SONG?.start || null,  // Mulai dari detik ke-5
-        loopEndTime: window?.CROPPED_SONG?.end || null    // Loop kembali saat mencapai detik ke-15
+        loopStartTime: window?.CROPPED_SONG?.start || null,
+        loopEndTime: window?.CROPPED_SONG?.end || null
     },
 
     // Enhanced device detection
@@ -1374,13 +1373,18 @@ var AudioManager = {
         audio.load();
         this.state.backgroundMusic = audio;
 
+        // Setup error handling
+        audio.addEventListener('error', (e) => {
+            console.error('Audio error details:', audio.error);
+            this.state.isMusicPlayed = false;
+            this.state.isMusicAttemptingToPlay = false;
+            this.pauseBoxAnimation();
+        });
+
         // Setup custom loop dengan timeupdate
         if (this.state.loopStartTime != null && this.state.loopEndTime != null) {
             this.setupCustomLoop();
         }
-
-        // Setup Web Audio Context
-        this.initAudioContext();
     },
 
     // Get MIME type for audio source
@@ -1394,18 +1398,6 @@ var AudioManager = {
             aac: 'audio/aac'
         };
         return types[ext] || 'audio/mpeg';
-    },
-
-    // Initialize Web Audio Context
-    initAudioContext: function () {
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            if (AudioContext && !this.state.audioContext) {
-                this.state.audioContext = new AudioContext();
-            }
-        } catch (e) {
-            console.log('Web Audio API not supported:', e);
-        }
     },
 
     // Setup custom loop dari detik ke-5 sampai detik ke-15
@@ -1494,6 +1486,8 @@ var AudioManager = {
     fallbackUnlock: function () {
         return new Promise((resolve, reject) => {
             const audio = this.state.backgroundMusic;
+            if (!audio) return reject('No audio element');
+            
             audio.muted = false;
 
             const playPromise = audio.play();
@@ -1501,22 +1495,10 @@ var AudioManager = {
             if (playPromise !== undefined) {
                 playPromise.then(() => {
                     audio.pause();
-                    audio.currentTime = 0;
                     this.state.isAudioUnlocked = true;
-
-                    // Also unlock Web Audio Context
-                    if (this.state.audioContext && this.state.audioContext.state === 'suspended') {
-                        this.state.audioContext.resume().then(() => {
-                            // console.log('Web Audio Context resumed');
-                        });
-                    }
-
-                    // console.log('Audio unlocked via fallback method');
                     resolve();
                 }).catch(error => {
                     console.log('Fallback unlock failed:', error);
-
-                    // Last resort - just mark as unlocked for old browsers
                     if (this.state.retryAttempts < this.state.maxRetries) {
                         this.state.retryAttempts++;
                         setTimeout(() => {
@@ -1822,12 +1804,10 @@ function getViewportWidth() {
     return Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
 }
 
-if (getViewportWidth() > 960) {
-    $(document).on('touchstart click', function (e) {
-        // Play Music Once
-        playMusicOnce()
-    });
-}
+$(document).on('touchstart click', function (e) {
+    // Play Music Once
+    playMusicOnce()
+});
 
 /*  ==============================
         BOOK CONFIGURATION
