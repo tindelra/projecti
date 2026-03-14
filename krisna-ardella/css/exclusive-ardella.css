@@ -1032,7 +1032,7 @@ section.cover .inner .foot .prime-title {}
 .couple-wrap {
     position: relative;
     overflow: hidden;
-    padding: 32% 0 10%;
+    padding: 0% 0 10%;
 }
 
 .couple-wrap .couple {
@@ -1135,7 +1135,7 @@ section.cover .inner .foot .prime-title {}
     padding: 0 6.2%;
     position: relative;
     z-index: 1;
-    transform: translateY(-60px);
+    transform: translateY(50px);
 }
 
 .couple-info.bride .couple-details {
@@ -1151,7 +1151,7 @@ section.cover .inner .foot .prime-title {}
 }
 
 .couple-info.bride .couple-preview {
-    margin-top: -115px;
+    margin-top: 15px;
 }
 
 .couple-info.groom .couple-details.top {
@@ -1163,7 +1163,7 @@ section.cover .inner .foot .prime-title {}
     padding: 0 6.2%;
     position: relative;
     z-index: 1;
-    transform: translateY(60px);
+    transform: translateY(62px);
 }
 
 .couple-info.groom .couple-details {
@@ -1175,11 +1175,11 @@ section.cover .inner .foot .prime-title {}
     padding: 0 6.2%;
     position: relative;
     z-index: 1;
-    transform: translateY(60px);
+    transform: translateY(38px);
 }
 
 .couple-info.groom .couple-preview {
-    margin-top: -55px;
+    margin-top: -65px;
 }
 
 .couple-details .couple-name-big {
@@ -1246,7 +1246,7 @@ section.cover .inner .foot .prime-title {}
     position: relative;
     padding: 0px;
     /* margin: 80px auto; */
-    margin: 25% auto 5%;
+    margin: 18% 0% 10%;
 }
 
 .separator-wrap .separator {
@@ -2332,7 +2332,7 @@ section.video-gallery .inner .video-outer .video-inner>.title>p {
 
 @media (max-width: 960px) {
     .activity-content {
-        gap: 10px;
+        gap: 0px;
     }
 }
 
@@ -2432,8 +2432,8 @@ section.video-gallery .inner .video-outer .video-inner>.title>p {
 
     .event-details,
     .activity-details {
-        padding: 10px 0px 0px;
-        gap: 10px;
+        padding: 0px 5px 0px;
+        gap: 4px;
     }
 }
 
@@ -6279,6 +6279,14 @@ section.footer .footer-inner .footer-logo path {
     transform: translate(41%, -1%);
 }
 
+.orn-event-9-1 {
+    position: absolute;
+    width: 31.6%;
+    bottom: 20%;
+    left: 0%;
+    transform: translate(240%, 15%);
+}
+
 .orn-event-10 {
     position: absolute;
     width: 24.02%;
@@ -6324,7 +6332,7 @@ section.footer .footer-inner .footer-logo path {
     width: 31.6%;
     bottom: 20%;
     left: 0%;
-    transform: translate(-30%, 15%) scaleX(-1);
+    transform: translate(-30%, 15%);
 }
 
 .orn-event-16 {
@@ -6644,6 +6652,14 @@ section.footer .footer-inner .footer-logo path {
     bottom: 0;
     left: 0%;
     transform: translate(-44.33%, 0%) scaleX(-1);
+}
+
+.orn-qm-2-1.left {
+    position: absolute;
+    width: 31.6%;
+    bottom: 20%;
+    left: 0%;
+    transform: translate(-30%, 15%) scaleX(-1);
 }
 
 .orn-qm-3.right {

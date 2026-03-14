@@ -1,0 +1,68 @@
+.rotate {
+    transform: rotate(180deg);
+}
+
+.accor-bank-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Button */
+.bank-btn-accordion {
+    background: var(--button-background-primary);
+    color: var(--button-text-primary);
+    border: none;
+    border-radius: 999px;
+    width: 100%;
+    font-size: var(--body-text-size);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.bank-btn-accordion:hover {
+    opacity: 0.8;
+}
+
+.bank-btn-accordion.active {
+    background: var(--button-background-secondary);
+    color: var(--button-text-secondary);
+}
+
+.bank-btn-accordion p.bank-btop-txt {
+    color: var(--button-text-primary);
+    line-height: 150%;
+    font-weight: 500;
+    font-family: var(--body-text-family);
+    font-size: var(--body-text-size);
+    transition: color 0.3s ease;
+}
+
+.bank-btn-accordion:hover p.bank-btop-txt {
+    opacity: 0.8;
+}
+
+.bank-btn-accordion i {
+    color: var(--button-text-primary);
+    font-size: 14px;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+
+.bank-btn-accordion.active i {
+    color: var(--button-text-secondary);
+    transform: rotate(180deg);
+}
+
+.bank-btn-accordion:hover i {
+    opacity: 0.8;
+}
+
+.bank-btn-accordion i.rotate {
+    transform: rotate(180deg);
+}
+
+.bank-btn-accordion.active p.bank-btop-txt {
+    color: var(--button-text-secondary);
+}
