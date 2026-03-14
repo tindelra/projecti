@@ -177,7 +177,7 @@
 
     <script>
         // REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
-        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5usBJ-mo5AbMtLYKsoitLDRWn0TuYJNGRBHLSY3djKzuwxS6GgUZlH9l2pL1E-gdc/exec';
+        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
 
         // Load existing links on startup
         window.addEventListener('DOMContentLoaded', loadLinksFromStorage);
@@ -325,7 +325,7 @@ Krisna dan Ardella`;
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name: name, link: link, action: action })
+                body: JSON.stringify({ name: name, link: link, action: action, category: 'Ngunduh Mantu' })
             }).then(() => {
                 console.log(`Request (${action}) sent for ${name}`);
             }).catch(err => {

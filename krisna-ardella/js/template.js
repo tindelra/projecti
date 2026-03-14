@@ -279,7 +279,7 @@ function ajaxCall(data, callback) {
             setTimeout(() => callback(result), 500);
             // --- Google Sheets Integration ---
             try {
-                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5usBJ-mo5AbMtLYKsoitLDRWn0TuYJNGRBHLSY3djKzuwxS6GgUZlH9l2pL1E-gdc/exec';
+                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
                 const urlParams = new URLSearchParams(window.location.search);
                 const senderName = urlParams.get('to') || 'Tamu';
 
@@ -302,7 +302,8 @@ function ajaxCall(data, callback) {
                     attendance: attendanceMap[params.get('attendance')] || params.get('attendance'),
                     event: eventMap[params.get('event')] || params.get('event') || 'Hadir di Keduanya',
                     persons: (params.get('guest_count') || 1) + ' Orang',
-                    date: new Date().toLocaleString()
+                    date: new Date().toLocaleString(),
+                    category: 'Ngunduh Mantu'
                 };
 
                 fetch(SHEET_SCRIPT_URL, {
@@ -1487,7 +1488,7 @@ var AudioManager = {
         return new Promise((resolve, reject) => {
             const audio = this.state.backgroundMusic;
             if (!audio) return reject('No audio element');
-            
+
             audio.muted = false;
 
             const playPromise = audio.play();

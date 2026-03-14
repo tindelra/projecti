@@ -38,7 +38,7 @@ window.MockBackend = {
         localStorage.setItem('wedding_wishes', JSON.stringify(wishes));
 
         // 2. Delete from Google Sheets
-        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxMr-RJtThDfzWU58bI3JGk8acr7hdTtJg2UdLVmK-jWLor2MG_zWlnJbThKSWjWJaS/exec';
+        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
 
         fetch(SHEET_SCRIPT_URL, {
             method: 'POST',
@@ -46,7 +46,8 @@ window.MockBackend = {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 action: 'deleteComment',
-                id: id
+                id: id,
+                category: 'ardella-krisna'
             })
         }).then(() => {
             console.log('Delete request sent to sheet');
@@ -212,7 +213,7 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                 }
                 if (comment) {
                     // --- Google Sheets Integration ---
-                    const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5usBJ-mo5AbMtLYKsoitLDRWn0TuYJNGRBHLSY3djKzuwxS6GgUZlH9l2pL1E-gdc/exec';
+                    const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
 
                     const attendanceMap = {
                         'will_attend': 'Hadir',
@@ -230,7 +231,8 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                             comment: comment,
                             attendance: attendanceMap[attendance] || attendance || 'Hadir',
                             date: new Date().toLocaleString(),
-                            id: wishId
+                            id: wishId,
+                            category: 'Resepsi'
                         })
                     }).then(() => console.log('Wish sent to sheet'))
                         .catch(err => console.error('Wish sheet error:', err));
@@ -242,7 +244,7 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                     isMocked = true;
                 }
             } else if (action === 'loadComment' || action === 'moreComment') {
-                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5usBJ-mo5AbMtLYKsoitLDRWn0TuYJNGRBHLSY3djKzuwxS6GgUZlH9l2pL1E-gdc/exec';
+                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
                 const start = parseInt(data.get('start') || 0);
                 const limit = parseInt(data.get('limit') || 5);
 
@@ -313,7 +315,7 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                 for (let [key, value] of data.entries()) { rsvpData[key] = value; }
 
                 // --- Google Sheets Integration ---
-                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5usBJ-mo5AbMtLYKsoitLDRWn0TuYJNGRBHLSY3djKzuwxS6GgUZlH9l2pL1E-gdc/exec';
+                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
 
                 // Map values to Indonesian
                 const attendanceMap = {
@@ -340,7 +342,8 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                         attendance: attendanceMap[rsvpData.attendance] || rsvpData.attendance,
                         event: eventMap[rsvpData.event] || rsvpData.event || 'Hadir di Keduanya',
                         persons: (rsvpData.persons || rsvpData.guest_count || 1) + ' Orang',
-                        date: new Date().toLocaleString()
+                        date: new Date().toLocaleString(),
+                        category: 'Resepsi'
                     })
                 }).then(() => console.log('RSVP sent to sheet'))
                     .catch(err => console.error('RSVP sheet error:', err));
