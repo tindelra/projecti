@@ -26,7 +26,7 @@ var COVERS = [{
     'position': 'MAIN',
     'details': {
         'desktop': "<div class=\"picture desktop\">\n" +
-            " <img src=\"media/images/cover-desktop.png\" alt=\"\">\n" +
+            " <img src=\"media/images/cover-desktop.webp\" alt=\"\">\n" +
             "</div>",
         'mobile': "<div class=\"picture mobile\">\n" +
             " <img src=\"media/images/cover-mobile.webp\" alt=\"\">\n" +
