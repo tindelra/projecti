@@ -1762,20 +1762,22 @@ section.love-story .story-inner {
 .photo-slider-wrap .photo-slider {
     position: relative;
     flex: 1;
-    min-width: 0; /* Important for flex items with overflow */
+    min-width: 0;
 }
 
 .photo-slider .slick-list {}
 
-.photo-slider .photo-item {
-    padding: 0px 4px;
-}
+.photo-slider .photo-item {}
 
 .photo-slider .photo-img-wrap {
     width: auto;
     height: 100px;
     aspect-ratio: 9 / 16;
     margin: 0 auto;
+}
+
+.photo-slider .photo-item {
+    padding: 0 5px;
 }
 
 .photo-slider .photo-img {
@@ -1803,13 +1805,15 @@ section.love-story .story-inner {
 }
 
 .photo-arrow svg {
-    height: 30px; /* Scaled down for the thumbnail row */
+    height: 30px;
+    /* Scaled down for the thumbnail row */
     width: auto;
     display: block;
 }
 
 .photo-arrow svg path {
-    stroke: var(--primary-color, #000); /* Use theme color if available */
+    stroke: var(--primary-color, #000);
+    /* Use theme color if available */
 }
 
 .photo-arrow.slick-disabled {
@@ -1846,7 +1850,7 @@ section.love-story .story-inner {
 
 @media (min-width : 961px) {
     .photo-slider .photo-img-wrap {
-        height: 180px;
+        height: 120px;
     }
 }
 
