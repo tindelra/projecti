@@ -1510,7 +1510,7 @@ section.love-story .story-inner {
 
 @media (max-width: 960px) {
     .story-item-wrapper {
-        height: 350px;
+        height: 400px;
     }
 }
 
@@ -7873,4 +7873,57 @@ form-group guest-comment-wrap {
 
 .copy-btn-small svg {
     display: block;
+}
+
+/* ==============================
+      LightGallery Icon Fixes
+============================== */
+.lg-toolbar .lg-close:after {
+    content: "\f00d" !important;
+    font-family: 'Font Awesome 5 Free' !important;
+    font-weight: 900 !important;
+}
+
+/* Fix double arrows and use FontAwesome */
+.lg-actions .lg-next:before,
+.lg-actions .lg-prev:before {
+    display: none !important;
+}
+
+.lg-actions .lg-next:after {
+    content: "\f054" !important;
+    font-family: 'Font Awesome 5 Free' !important;
+    font-weight: 900 !important;
+    display: block !important;
+}
+
+.lg-actions .lg-prev:after {
+    content: "\f053" !important;
+    font-family: 'Font Awesome 5 Free' !important;
+    font-weight: 900 !important;
+    display: block !important;
+}
+
+.lg-actions .lg-next,
+.lg-actions .lg-prev {
+    display: block !important;
+    opacity: 1 !important;
+    color: #fff !important;
+    font-size: 30px !important;
+    background-color: rgba(0,0,0,0.5) !important;
+    border-radius: 50% !important;
+    width: 50px !important;
+    height: 50px !important;
+    line-height: 50px !important;
+    text-align: center !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+}
+
+.lg-actions .lg-next {
+    right: 20px !important;
+}
+
+.lg-actions .lg-prev {
+    left: 20px !important;
 }

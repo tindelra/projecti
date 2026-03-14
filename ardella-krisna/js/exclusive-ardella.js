@@ -113,4 +113,29 @@ $(document).ready(function () {
             $(this).closest(".rsvp-option").addClass("active");
         }
     });
+
+    // Initialize Unified LightGallery
+    const photoGallery = document.getElementById('photo-gallery');
+    if (photoGallery) {
+        let currentGalleryIndex = 0;
+
+        lightGallery(photoGallery, {
+            selector: '.photo-link',
+            download: false,
+            counter: true,
+            index: 0
+        });
+
+        // Track index change
+        photoGallery.addEventListener('onAfterSlide', function (event) {
+            currentGalleryIndex = event.detail.index;
+        });
+
+        // Sync back to slick sliders on close
+        photoGallery.addEventListener('onBeforeClose', function () {
+            // Update both synced sliders
+            $(".photo-nav").slick("slickGoTo", currentGalleryIndex, true); // true for instant move
+            $(".photo-slider").slick("slickGoTo", currentGalleryIndex, true);
+        });
+    }
 })
