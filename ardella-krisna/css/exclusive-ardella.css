@@ -1686,6 +1686,7 @@ section.love-story .story-inner {
 
 .photo-wrap .photo-inner {
     position: relative;
+    z-index: 2;
 }
 
 /* Head */
@@ -1953,6 +1954,7 @@ section.video-gallery .inner .video-outer .video-inner>.title>p {
     max-width: 600px;
     height: auto;
     margin: 0 auto 12%;
+    z-index: 2;
 }
 
 .save-date-wrap .save-date {
@@ -1974,6 +1976,7 @@ section.video-gallery .inner .video-outer .video-inner>.title>p {
     position: relative;
     max-width: 600px;
     margin: 0 auto;
+    z-index: 2;
 }
 
 .save-date-wrap .save-date-title {
@@ -2033,6 +2036,8 @@ section.video-gallery .inner .video-outer .video-inner>.title>p {
     flex-direction: column;
     /* padding: 20px 0px; */
     margin-top: 10px;
+    position: relative;
+    z-index: 2;
 }
 
 .add-to-calendar {
