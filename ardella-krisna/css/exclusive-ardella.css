@@ -1505,7 +1505,13 @@ section.love-story .story-inner {
     display: flex;
     gap: 8px;
     max-width: 750px;
-    height: 350px;
+    height: 750px;
+}
+
+@media (max-width: 960px) {
+    .story-item-wrapper {
+        height: 350px;
+    }
 }
 
 .story-item-wrapper .story__slider-preview {
@@ -1724,10 +1730,8 @@ section.love-story .story-inner {
 }
 
 .photo-nav .slick-list {
-    padding: 4% 0 5%;
+    padding: 10px 0;
 }
-
-.photo-nav .photo-item {}
 
 .photo-nav .photo-item .preview-wrap {
     position: relative;
@@ -1755,8 +1759,7 @@ section.love-story .story-inner {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 15px;
-    padding: 0 10px;
+    padding: 0px 10px 0px;
 }
 
 .photo-slider-wrap .photo-slider {
@@ -1765,19 +1768,11 @@ section.love-story .story-inner {
     min-width: 0;
 }
 
-.photo-slider .slick-list {}
-
-.photo-slider .photo-item {}
-
 .photo-slider .photo-img-wrap {
     width: auto;
     height: 100px;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: 1 / 1.5;
     margin: 0 auto;
-}
-
-.photo-slider .photo-item {
-    padding: 0 5px;
 }
 
 .photo-slider .photo-img {
@@ -1802,18 +1797,6 @@ section.love-story .story-inner {
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.photo-arrow svg {
-    height: 30px;
-    /* Scaled down for the thumbnail row */
-    width: auto;
-    display: block;
-}
-
-.photo-arrow svg path {
-    stroke: var(--primary-color, #000);
-    /* Use theme color if available */
 }
 
 .photo-arrow.slick-disabled {
@@ -1854,6 +1837,9 @@ section.love-story .story-inner {
     }
 }
 
+.photo-slider .photo-item {
+    padding: 0 5px;
+}
 
 /* ==============================
       Video
@@ -6406,13 +6392,6 @@ section.footer .footer-inner .footer-logo path {
 
 
 /* RSVP */
-.orn-rsvp-1.right {
-    position: absolute;
-    width: 27.64%;
-    right: 0;
-    bottom: 0;
-    transform: translate(55.65%, 0%) scaleX(-1);
-}
 
 .orn-rsvp-2.right {
     position: absolute;
@@ -7820,7 +7799,7 @@ section.footer .footer-inner .footer-logo path {
     gap: 12px;
 }
 
-form-group guest-name-wrap {
+.form-group .guest-name-wrap {
     margin-top: 8px;
     margin-bottom: 8px;
 }

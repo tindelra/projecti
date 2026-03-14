@@ -29,6 +29,8 @@ var photo_slider_options = {
     prevArrow: $(".photo-arrow.prev"),
     nextArrow: $(".photo-arrow.next"),
     asNavFor: ".photo-nav",
+    rows: 1,
+    slidesPerRow: 1,
     responsive: [
         {
             breakpoint: 960,
@@ -55,8 +57,8 @@ var resize_photo_nav = function () {
     // decrease size to smaller size to parent width
     width = Math.floor(width - (38.4 / 100) * width);
 
-    // set maximal height
-    var height = width + (width / 3);
+    // set maximal height for 1:1.5 ratio
+    var height = width * 1.5;
 
     // each height
     $nav.find('.preview-wrap').each((i, o) => {
