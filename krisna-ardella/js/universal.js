@@ -9,6 +9,16 @@ window.MockBackend = {
     getWishes: function () {
         return JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
     },
+    getDeletedIds: function () {
+        return JSON.parse(localStorage.getItem('deleted_wish_ids') || '[]');
+    },
+    saveDeletedId: function (id) {
+        const ids = this.getDeletedIds();
+        if (!ids.includes(id)) {
+            ids.push(id);
+            localStorage.setItem('deleted_wish_ids', JSON.stringify(ids));
+        }
+    },
     saveWish: function (name, comment, attendance = null, id = null) {
         const wishes = this.getWishes();
         const newWish = {
@@ -32,43 +42,25 @@ window.MockBackend = {
             $btn.css('pointer-events', 'none');
         }
 
-        // 1. Delete locally
+        // 1. Delete locally (Soft Delete)
+        this.saveDeletedId(id);
+
         let wishes = this.getWishes();
         wishes = wishes.filter(w => w.id != id);
         localStorage.setItem('wedding_wishes', JSON.stringify(wishes));
 
-        // 2. Delete from Google Sheets
-        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLgXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
+        // Visual Feedback immediate
+        console.log('Soft delete applied for ID:', id);
+        if ($btn) {
+            $btn.closest('.comment-item').fadeOut(500, function () {
+                $(this).remove();
+            });
+        } else {
+            window.location.reload();
+        }
 
-        fetch(SHEET_SCRIPT_URL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                action: 'deleteWish',
-                id: id,
-                category: 'Ngunduh Mantu'
-            })
-        }).then(() => {
-            console.log('Delete request sent to sheet');
-            if ($btn) {
-                $btn.closest('.comment-item').fadeOut(500, function () {
-                    $(this).remove();
-                });
-            } else {
-                window.location.reload();
-            }
-        }).catch(err => {
-            console.error('Delete sheet error:', err);
-            if ($btn) {
-                // Still remove locally even if sheet fails (user expects immediate action)
-                $btn.closest('.comment-item').fadeOut(500, function () {
-                    $(this).remove();
-                });
-            } else {
-                window.location.reload();
-            }
-        });
+        // We no longer attempt to delete from Spreadsheet as it is unreliable
+        // and user requested a one-way flow.
     },
     getRSVPs: function () {
         return JSON.parse(localStorage.getItem('wedding_rsvp') || '[]');
@@ -130,6 +122,10 @@ window.MockBackend = {
             console.log('✅ Admin Mode Activated');
         }
 
+        // Final filter to ensure soft-deleted items are NEVER rendered
+        const deletedIds = this.getDeletedIds();
+        wishes = wishes.filter(w => !deletedIds.includes(w.id));
+
         return wishes.map(w => {
             const dateObj = new Date(w.date);
             const dateStr = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
@@ -139,8 +135,8 @@ window.MockBackend = {
                 <div class="comment-head" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
                     <span class="name" style="font-weight: 700; color: #8B0000; font-family: var(--body-text-family); font-size: 1.1em;">
                         ${w.name}
-                        ${w.attendance === 'will_attend' ? '<i class="fas fa-check-circle" style="color: #28a745; font-size: 0.8em; margin-left: 5px;" title="Will Attend"></i>' : ''}
-                        ${w.attendance === 'unable_to_attend' ? '<i class="fas fa-times-circle" style="color: #dc3545; font-size: 0.8em; margin-left: 5px;" title="Unable to Attend"></i>' : ''}
+                        ${(w.attendance === 'will_attend' || w.attendance === 'Hadir') ? '<i class="fas fa-check-circle" style="color: #28a745; font-size: 0.8em; margin-left: 5px;" title="Hadir"></i>' : ''}
+                        ${(w.attendance === 'unable_to_attend' || w.attendance === 'Tidak Hadir') ? '<i class="fas fa-times-circle" style="color: #dc3545; font-size: 0.8em; margin-left: 5px;" title="Tidak Hadir"></i>' : ''}
                     </span>
                     ${isAdmin ? `
                     <button class="delete-btn" data-delete="delete_comment" data-comment="${w.id}">
@@ -221,19 +217,19 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                     };
 
                     const wishId = Date.now();
+                    const wishData = new URLSearchParams();
+                    wishData.append('action', 'wish');
+                    wishData.append('name', name);
+                    wishData.append('comment', comment);
+                    wishData.append('attendance', attendanceMap[attendance] || attendance || '');
+                    wishData.append('date', new Date().toLocaleString());
+                    wishData.append('id', wishId);
+                    wishData.append('category', 'Ngunduh Mantu');
+
                     fetch(SHEET_SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            action: 'wish',
-                            name: name,
-                            comment: comment,
-                            attendance: attendanceMap[attendance] || attendance || 'Hadir',
-                            date: new Date().toLocaleString(),
-                            id: wishId,
-                            category: 'Ngunduh Mantu'
-                        })
+                        body: wishData
                     }).then(() => console.log('Wish sent to sheet'))
                         .catch(err => console.error('Wish sheet error:', err));
                     // ---------------------------------
@@ -274,11 +270,13 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
 
                         // 3. Merge and Sync
                         const localWishes = window.MockBackend.getWishes();
+                        const deletedIds = window.MockBackend.getDeletedIds();
                         const finalWishes = [...localWishes];
 
                         sheetWishes.forEach(item => {
-                            // SKIP HEADER ROW OR INVALID DATA
+                            // SKIP HEADER ROW OR INVALID DATA OR DELETED ITEMS
                             if (!item.name || item.name === 'Name' || item.name === 'Timestamp') return;
+                            if (deletedIds.includes(item.id)) return;
 
                             const exists = finalWishes.some(lw =>
                                 (lw.id && item.id && String(lw.id) === String(item.id)) ||
@@ -335,19 +333,19 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                 const urlParams = new URLSearchParams(window.location.search);
                 const guestName = urlParams.get('to') || 'Tamu';
 
+                const rsvpPayload = new URLSearchParams();
+                rsvpPayload.append('action', 'rsvp');
+                rsvpPayload.append('name', guestName);
+                rsvpPayload.append('attendance', attendanceMap[rsvpData.attendance] || rsvpData.attendance);
+                rsvpPayload.append('event', eventMap[rsvpData.event] || rsvpData.event || 'Hadir di Keduanya');
+                rsvpPayload.append('persons', (rsvpData.persons || rsvpData.guest_count || 1) + ' Orang');
+                rsvpPayload.append('date', new Date().toLocaleString());
+                rsvpPayload.append('category', 'Ngunduh Mantu');
+
                 fetch(SHEET_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        action: 'rsvp',
-                        name: guestName,
-                        attendance: attendanceMap[rsvpData.attendance] || rsvpData.attendance,
-                        event: eventMap[rsvpData.event] || rsvpData.event || 'Hadir di Keduanya',
-                        persons: (rsvpData.persons || rsvpData.guest_count || 1) + ' Orang',
-                        date: new Date().toLocaleString(),
-                        category: 'Ngunduh Mantu'
-                    })
+                    body: rsvpPayload
                 }).then(() => console.log('RSVP sent to sheet'))
                     .catch(err => console.error('RSVP sheet error:', err));
                 // ---------------------------------

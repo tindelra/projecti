@@ -338,13 +338,16 @@ Krisna dan Ardella`;
                 return;
             }
 
+            const formData = new URLSearchParams();
+            formData.append('name', name);
+            formData.append('link', link);
+            formData.append('action', action);
+            formData.append('category', category);
+
             fetch(SHEET_SCRIPT_URL, {
                 method: 'POST',
-                mode: 'no-cors', // 'no-cors' is required for Google Apps Script Web App without easier OAuth
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name: name, link: link, action: action, category: category })
+                mode: 'no-cors',
+                body: formData
             }).then(() => {
                 console.log(`Request (${action}) sent for ${name}`);
             }).catch(err => {
