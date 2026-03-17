@@ -38,16 +38,16 @@ window.MockBackend = {
         localStorage.setItem('wedding_wishes', JSON.stringify(wishes));
 
         // 2. Delete from Google Sheets
-        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
+        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLgXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
 
         fetch(SHEET_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                action: 'deleteComment',
+                action: 'deleteWish',
                 id: id,
-                category: 'ardella-krisna'
+                category: 'Resepsi'
             })
         }).then(() => {
             console.log('Delete request sent to sheet');
@@ -213,7 +213,7 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                 }
                 if (comment) {
                     // --- Google Sheets Integration ---
-                    const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
+                    const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLgXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
 
                     const attendanceMap = {
                         'will_attend': 'Hadir',
@@ -244,7 +244,7 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                     isMocked = true;
                 }
             } else if (action === 'loadComment' || action === 'moreComment') {
-                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
+                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLgXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
                 const start = parseInt(data.get('start') || 0);
                 const limit = parseInt(data.get('limit') || 5);
 
@@ -277,8 +277,11 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                         const finalWishes = [...localWishes];
 
                         sheetWishes.forEach(item => {
+                            // SKIP HEADER ROW OR INVALID DATA
+                            if (!item.name || item.name === 'Name' || item.name === 'Timestamp') return;
+
                             const exists = finalWishes.some(lw =>
-                                (lw.id && item.id && lw.id == item.id) ||
+                                (lw.id && item.id && String(lw.id) === String(item.id)) ||
                                 (lw.name === item.name && lw.comment === item.comment)
                             );
                             if (!exists) {
@@ -315,7 +318,7 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                 for (let [key, value] of data.entries()) { rsvpData[key] = value; }
 
                 // --- Google Sheets Integration ---
-                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
+                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLgXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
 
                 // Map values to Indonesian
                 const attendanceMap = {

@@ -279,7 +279,7 @@ function ajaxCall(data, callback) {
             setTimeout(() => callback(result), 500);
             // --- Google Sheets Integration ---
             try {
-                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
+                const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLgXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
                 const urlParams = new URLSearchParams(window.location.search);
                 const senderName = urlParams.get('to') || 'Tamu';
 

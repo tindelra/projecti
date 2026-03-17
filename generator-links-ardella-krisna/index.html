@@ -47,6 +47,16 @@
             margin-bottom: 8px;
         }
 
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            box-sizing: border-box;
+            background: white;
+        }
+
         textarea {
             width: 100%;
             height: 150px;
@@ -170,6 +180,14 @@
             <textarea id="names" placeholder="Alice&#10;Bob Smith&#10;Charlie"></textarea>
         </div>
 
+        <div class="input-group">
+            <label for="category">Kategori:</label>
+            <select id="category">
+                <option value="Resepsi" selected>Resepsi</option>
+                <option value="Ngunduh Mantu">Ngunduh Mantu</option>
+            </select>
+        </div>
+
         <button class="generate-btn" onclick="generateLinks()">Generate Links</button>
 
         <div class="output-list" id="output"></div>
@@ -177,7 +195,7 @@
 
     <script>
         // REPLACE THIS WITH YOUR GOOGLE APPS SCRIPT WEB APP URL
-        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzAad1QxtH97DLSOXb6fzKxMM86yyn8fCo3UqevukjZcLr6xVffG3y0RASmI-R5qwEi/exec';
+        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLgXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
 
         // Load existing links on startup
         window.addEventListener('DOMContentLoaded', loadLinksFromStorage);
@@ -216,6 +234,7 @@
 
         function generateLinks() {
             const input = document.getElementById('names').value;
+            const category = document.getElementById('category').value;
             const output = document.getElementById('output');
             const lines = input.split('\n');
             const existingNames = new Set();
@@ -245,7 +264,7 @@
                     existingNames.add(name);
 
                     // Save to Google Sheet
-                    saveToSheet(name, link, 'save');
+                    saveToSheet(name, link, 'save', category);
                 }
             });
         }
@@ -313,7 +332,7 @@ Ardella dan Krisna`;
             }
         }
 
-        function saveToSheet(name, link, action = 'save') {
+        function saveToSheet(name, link, action = 'save', category = 'Resepsi') {
             if (SHEET_SCRIPT_URL === 'YOUR_WEB_APP_URL_HERE') {
                 console.warn('Google Sheet URL not set. Data not saved.');
                 return;
@@ -325,7 +344,7 @@ Ardella dan Krisna`;
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ name: name, link: link, action: action, category: 'Resepsi' })
+                body: JSON.stringify({ name: name, link: link, action: action, category: category })
             }).then(() => {
                 console.log(`Request (${action}) sent for ${name}`);
             }).catch(err => {
