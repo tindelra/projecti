@@ -167,6 +167,48 @@
         .delete-btn:hover {
             background: #c82333;
         }
+
+        .item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 15px;
+            }
+
+            .link-item {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+            }
+
+            .guest-name {
+                width: 100%;
+                margin-bottom: 8px;
+                padding-right: 0;
+            }
+
+            .guest-link {
+                width: 100%;
+                margin-bottom: 12px;
+                padding-right: 0;
+            }
+
+            .item-actions {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+
+            .item-actions button,
+            .item-actions a {
+                flex: 1;
+                margin: 0 !important;
+                justify-content: center;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 
@@ -217,9 +259,11 @@
             item.innerHTML = `
                 <div class="guest-name">${name}</div>
                 <div class="guest-link">${link}</div>
-                <button class="copy-btn" onclick="copyLink(this, '${link}')">Copy Link</button>
-                <button class="wa-btn" onclick="shareToWhatsapp('${name}', '${link}')">Share via WA</button>
-                <button class="delete-btn" onclick="deleteLink(this)">Delete</button>
+                <div class="item-actions">
+                    <button class="copy-btn" onclick="copyLink(this, '${link}')">Copy Link</button>
+                    <button class="wa-btn" onclick="shareToWhatsapp('${name}', '${link}')">Share via WA</button>
+                    <button class="delete-btn" onclick="deleteLink(this)">Delete</button>
+                </div>
             `;
             output.appendChild(item);
         }
