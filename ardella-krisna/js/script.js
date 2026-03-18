@@ -81,7 +81,7 @@ function initGuestName() {
 
     if (isAdmin || guestName) {
         // Convert dashes back to spaces for display
-        const displayName = isAdmin ? 'Krisna & Ardella' : decodeURIComponent(guestName).replace(/-/g, ' ');
+        const displayName = isAdmin ? 'Ardella & Krisna' : decodeURIComponent(guestName).replace(/-/g, ' ');
         const elements = document.querySelectorAll('.guest-name');
         elements.forEach(el => {
             if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
