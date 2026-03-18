@@ -59,8 +59,29 @@ window.MockBackend = {
             window.location.reload();
         }
 
-        // We no longer attempt to delete from Spreadsheet as it is unreliable
-        // and user requested a one-way flow.
+        // 2. Hard Delete from Google Sheets (Hybrid Approach)
+        const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLgXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
+
+        // Retrieve the wish we just soft-deleted to pass its name/comment
+        const allWishes = JSON.parse(localStorage.getItem('wedding_wishes') || '[]');
+        const deletedWish = allWishes.find(w => w.id == id);
+
+        const formData = new URLSearchParams();
+        formData.append('action', 'deleteWish');
+        formData.append('id', id);
+        formData.append('name', deletedWish ? deletedWish.name : '');
+        formData.append('comment', deletedWish ? deletedWish.comment : '');
+        formData.append('category', 'Ngunduh Mantu');
+
+        fetch(SHEET_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+        }).then(() => {
+            console.log('Hard delete request sent to Google Sheets for ID:', id);
+        }).catch(err => {
+            console.error('Delete sheet error:', err);
+        });
     },
     getRSVPs: function () {
         return JSON.parse(localStorage.getItem('wedding_rsvp') || '[]');
@@ -135,8 +156,8 @@ window.MockBackend = {
                 <div class="comment-head" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
                     <span class="name" style="font-weight: 700; color: #8B0000; font-family: var(--body-text-family); font-size: 1.1em;">
                         ${w.name}
-                        ${(w.attendance === 'will_attend' || w.attendance === 'Hadir') ? '<i class="fas fa-check-circle" style="color: #28a745; font-size: 0.8em; margin-left: 5px;" title="Hadir"></i>' : ''}
-                        ${(w.attendance === 'unable_to_attend' || w.attendance === 'Tidak Hadir') ? '<i class="fas fa-times-circle" style="color: #dc3545; font-size: 0.8em; margin-left: 5px;" title="Tidak Hadir"></i>' : ''}
+                        ${(function(a){ return a === 'will_attend' || a === 'hadir'; })((w.attendance || '').replace(/\s+/g, ' ').trim().toLowerCase()) ? '<i class="fas fa-check-circle" style="color: #28a745; font-size: 0.8em; margin-left: 5px;" title="Hadir"></i>' : ''}
+                        ${(function(a){ return a === 'unable_to_attend' || a.indexOf('tidak') >= 0; })((w.attendance || '').replace(/\s+/g, ' ').trim().toLowerCase()) ? '<i class="fas fa-times-circle" style="color: #dc3545; font-size: 0.8em; margin-left: 5px;" title="Tidak Hadir"></i>' : ''}
                     </span>
                     ${isAdmin ? `
                     <button class="delete-btn" data-delete="delete_comment" data-comment="${w.id}">
@@ -234,7 +255,7 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                         .catch(err => console.error('Wish sheet error:', err));
                     // ---------------------------------
 
-                    window.MockBackend.saveWish(name, comment, attendanceMap[attendance] || attendance || null, wishId);
+                    window.MockBackend.saveWish(name, comment, attendanceMap[attendance] || attendance || '', wishId);
 
                     response.message = 'Ucapan Anda sedang diproses...';
                     isMocked = true;
@@ -369,7 +390,7 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                         <i class="fas fa-check-circle" style="font-size: 3rem; color: var(--text-tertiary); margin-bottom: 20px;"></i>
                         <h3>Terima Kasih</h3>
                         <p>Konfirmasi kehadiran Anda sudah kami terima.</p>
-                        <button type="button" class="rsvp-confirm-btn" onclick="location.reload()">Ubah Jawaban</button>
+                        <button type="button" class="rsvp-confirm-btn" onclick="window.resetRSVPForm()">Ubah Jawaban</button>
                     </div>`;
                 isMocked = true;
             } else if (action === 'sendGift') {

@@ -107,7 +107,9 @@ window.initRSVPPersistence = function () {
         const rsvpContent = localStorage.getItem('wedding_rsvp_success_content');
         if (rsvpContent) {
             $('#rsvp-form').hide();
-            $('.rsvp-inner .rsvp-body').append('<div class="rsvp-success-message">' + rsvpContent + '</div>');
+            // Automatically upgrade cached HTML for older sessions
+            const updatedContent = rsvpContent.replace('location.reload()', 'window.resetRSVPForm()');
+            $('.rsvp-inner .rsvp-body').append('<div class="rsvp-success-message">' + updatedContent + '</div>');
         }
     }
 }

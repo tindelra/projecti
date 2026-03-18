@@ -107,7 +107,9 @@ window.initRSVPPersistence = function () {
         const rsvpContent = localStorage.getItem('wedding_rsvp_success_content');
         if (rsvpContent) {
             $('#rsvp-form').hide();
-            $('.rsvp-inner .rsvp-body').append('<div class="rsvp-success-message">' + rsvpContent + '</div>');
+            // Automatically upgrade cached HTML for older sessions
+            const updatedContent = rsvpContent.replace('location.reload()', 'window.resetRSVPForm()');
+            $('.rsvp-inner .rsvp-body').append('<div class="rsvp-success-message">' + updatedContent + '</div>');
         }
     }
 }
@@ -1188,6 +1190,10 @@ var post_comment = function (e) {
         $(form).find('input, select, textarea, button').prop('disabled', true);
         $(submitButton).html('Mengirim <i class="fas fa-spinner fa-spin"></i>');
     }
+
+    // DEBUG: trace values before sending
+    console.log('[post_comment] rsvp_data in localStorage:', localStorage.getItem('wedding_rsvp_data'));
+    console.log('[post_comment] post field:', data.get('post'), 'name:', data.get('name'), 'comment:', data.get('comment'));
 
     postData(data, onSuccess, onError, beforeSend);
 }
