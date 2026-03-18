@@ -151,13 +151,21 @@ window.MockBackend = {
             const dateObj = new Date(w.date);
             const dateStr = dateObj.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
             const timeStr = dateObj.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+            // Compute attendance icon BEFORE the template literal
+            const atd = (w.attendance || '').trim().toLowerCase();
+            let attendanceIcon = '';
+            if (atd === 'will_attend' || atd === 'hadir') {
+                attendanceIcon = '<i class="fas fa-check-circle" style="color: #28a745; font-size: 0.8em; margin-left: 5px;" title="Hadir"></i>';
+            } else if (atd === 'unable_to_attend' || atd.indexOf('tidak') >= 0) {
+                attendanceIcon = '<i class="fas fa-times-circle" style="color: #dc3545; font-size: 0.8em; margin-left: 5px;" title="Tidak Hadir"></i>';
+            }
+
             return `
             <div class="comment-item" style="margin-bottom: 12px; padding: 15px; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
                 <div class="comment-head" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
                     <span class="name" style="font-weight: 700; color: #8B0000; font-family: var(--body-text-family); font-size: 1.1em;">
-                        ${w.name}
-                        ${(function(a){ return a === 'will_attend' || a === 'hadir'; })((w.attendance || '').replace(/\s+/g, ' ').trim().toLowerCase()) ? '<i class="fas fa-check-circle" style="color: #28a745; font-size: 0.8em; margin-left: 5px;" title="Hadir"></i>' : ''}
-                        ${(function(a){ return a === 'unable_to_attend' || a.indexOf('tidak') >= 0; })((w.attendance || '').replace(/\s+/g, ' ').trim().toLowerCase()) ? '<i class="fas fa-times-circle" style="color: #dc3545; font-size: 0.8em; margin-left: 5px;" title="Tidak Hadir"></i>' : ''}
+                        ${w.name}${attendanceIcon}
                     </span>
                     ${isAdmin ? `
                     <button class="delete-btn" data-delete="delete_comment" data-comment="${w.id}">
@@ -222,11 +230,15 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
             if (action === 'newComment') {
                 const name = data.get('name') || 'Guest';
                 const comment = data.get('comment');
-                const rsvpData = localStorage.getItem('wedding_rsvp_data');
-                let attendance = null;
-                if (rsvpData) {
-                    const params = new URLSearchParams(rsvpData);
-                    attendance = params.get('attendance');
+                // Use window._rsvpAttendance (set in btn-next click) as primary source,
+                // falling back to localStorage for later page loads
+                let attendance = window._rsvpAttendance || null;
+                if (!attendance) {
+                    const rsvpData = localStorage.getItem('wedding_rsvp_data');
+                    if (rsvpData) {
+                        const params = new URLSearchParams(rsvpData);
+                        attendance = params.get('attendance');
+                    }
                 }
                 if (comment) {
                     // --- Google Sheets Integration ---

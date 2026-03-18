@@ -88,30 +88,7 @@ window.resetRSVPForm = function () {
 
 // ---------- Init RSVP Persistence -------------------------------------------
 window.initRSVPPersistence = function () {
-    const savedData = localStorage.getItem('wedding_rsvp_data');
-    if (savedData) {
-        // Pre-fill form
-        const params = new URLSearchParams(savedData);
-        for (const [key, value] of params.entries()) {
-            const $input = $(`#rsvp-form [name="${key}"]`);
-            if ($input.is(':radio')) {
-                const $radio = $(`#rsvp-form [name="${key}"][value="${value}"]`);
-                $radio.prop('checked', true);
-                $radio.closest('.rsvp-option').addClass('active');
-            } else {
-                $input.val(value);
-            }
-        }
-
-        // Show success message if already submitted
-        const rsvpContent = localStorage.getItem('wedding_rsvp_success_content');
-        if (rsvpContent) {
-            $('#rsvp-form').hide();
-            // Automatically upgrade cached HTML for older sessions
-            const updatedContent = rsvpContent.replace('location.reload()', 'window.resetRSVPForm()');
-            $('.rsvp-inner .rsvp-body').append('<div class="rsvp-success-message">' + updatedContent + '</div>');
-        }
-    }
+    // Do not pre-fill or pre-select any RSVP options — always start fresh
 }
 $(document).ready(function () {
     window.initRSVPPersistence();
@@ -651,10 +628,12 @@ $(document).on('submit', '#rsvp-form', function (e) {
     // Data
     var data = $(this).serialize();
 
+    // Save RSVP data to localStorage IMMEDIATELY (synchronous) 
+    // so the wish form can read the correct attendance value right away
+    localStorage.setItem('wedding_rsvp_data', data);
+
     // Ajax Call
     ajaxCall(data, function (result) {
-        // Save to localStorage
-        localStorage.setItem('wedding_rsvp_data', data);
         localStorage.setItem('wedding_rsvp_success_content', result.rsvp_content);
 
         // Hide form and show success message
@@ -702,6 +681,10 @@ $(document).on('click', '.btn-next', function (e) {
             $('.btn-back').fadeIn();
             $('.rsvp-action').css('justify-content', 'space-between');
         } else {
+            // Save RSVP attendance IMMEDIATELY (synchronous) before submitting form
+            // This guarantees the attendance value is in localStorage when the wish form reads it
+            localStorage.setItem('wedding_rsvp_data', 'attendance=' + attendance);
+            window._rsvpAttendance = attendance;
             $('#rsvp-form').submit();
         }
     }
