@@ -158,7 +158,7 @@ window.MockBackend = {
             if (atd === 'will_attend' || atd === 'hadir') {
                 attendanceIcon = '<i class="fas fa-check-circle" style="color: #28a745; font-size: 0.8em; margin-left: 5px;" title="Hadir"></i>';
             } else if (atd === 'unable_to_attend' || atd.indexOf('tidak') >= 0) {
-                attendanceIcon = '<i class="fas fa-times-circle" style="color: #dc3545; font-size: 0.8em; margin-left: 5px;" title="Tidak Hadir"></i>';
+                attendanceIcon = '<span style="color: #dc3545; font-size: 1em; margin-left: 5px; font-weight: bold;" title="Tidak Hadir">&#10006;</span>';
             }
 
             return `
@@ -242,27 +242,28 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                 }
                 if (comment) {
                     // --- Google Sheets Integration ---
-                    const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLgXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
+                    const SHEET_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz4kMWDTy3H4huCKwDW1tSwNkHefmjbrgPsCLXluM8y4YYQRB_CH710ATl5Lt4zvK4/exec';
 
                     const attendanceMap = {
                         'will_attend': 'Hadir',
                         'unable_to_attend': 'Tidak Hadir'
-                    };
-
+                    }
                     const wishId = Date.now();
-                    const wishData = new URLSearchParams();
-                    wishData.append('action', 'wish');
-                    wishData.append('name', name);
-                    wishData.append('comment', comment);
-                    wishData.append('attendance', attendanceMap[attendance] || attendance || '');
-                    wishData.append('date', new Date().toLocaleString());
-                    wishData.append('id', wishId);
-                    wishData.append('category', 'Ngunduh Mantu');
+                    const wishPayload = {
+                        action: 'wish',
+                        name: name,
+                        comment: comment,
+                        attendance: attendanceMap[attendance] || attendance || '',
+                        date: new Date().toLocaleString(),
+                        id: wishId,
+                        category: 'Ngunduh Mantu'
+                    };
 
                     fetch(SHEET_SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
-                        body: wishData
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(wishPayload)
                     }).then(() => console.log('Wish sent to sheet'))
                         .catch(err => console.error('Wish sheet error:', err));
                     // ---------------------------------

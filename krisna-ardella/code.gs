@@ -1,6 +1,11 @@
 function doPost(e) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var data = JSON.parse(e.postData.contents);
+  var data;
+  try {
+    data = JSON.parse(e.postData.contents);
+  } catch (err) {
+    data = e.parameter; // Fallback for application/x-www-form-urlencoded
+  }
   var action = data.action || 'save';
   
   // 1. SAVE LINK -> 'link-generator'
@@ -62,9 +67,10 @@ function doPost(e) {
     var sheet = ss.getSheetByName("wish");
     if (!sheet) sheet = ss.insertSheet("wish"); // Auto-create
     
-    var rowData = [new Date(), data.name, data.comment];
+    // Add 4th column for attendance
+    var rowData = [new Date(), data.name, data.comment, data.attendance];
     sheet.appendRow(rowData);
-    sheet.getRange(sheet.getLastRow(), 1, 1, 3).setHorizontalAlignment("left");
+    sheet.getRange(sheet.getLastRow(), 1, 1, 4).setHorizontalAlignment("left");
     
     return ContentService.createTextOutput("Saved Wish");
   }

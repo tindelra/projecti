@@ -161,7 +161,7 @@ window.MockBackend = {
             } else if (atd === 'unable_to_attend' || atd.indexOf('tidak') >= 0) {
                 attendanceIcon = '<span style="color: #dc3545; font-size: 1em; margin-left: 5px; font-weight: bold;" title="Tidak Hadir">&#10006;</span>';
             }
-            console.log('[formatCommentItems]', w.name, 'atd:', atd, 'icon:', attendanceIcon ? 'YES' : 'NO');
+            // console.log('[formatCommentItems]', w.name, 'atd:', atd, 'icon:', attendanceIcon ? 'YES' : 'NO');
 
             return `
             <div class="comment-item" style="margin-bottom: 12px; padding: 15px; background: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
@@ -253,19 +253,21 @@ var postData = function (data, onSuccess = () => { }, onError = () => { }, befor
                     };
 
                     const wishId = Date.now();
-                    const wishData = new URLSearchParams();
-                    wishData.append('action', 'wish');
-                    wishData.append('name', name);
-                    wishData.append('comment', comment);
-                    wishData.append('attendance', attendanceMap[attendance] || attendance || '');
-                    wishData.append('date', new Date().toLocaleString());
-                    wishData.append('id', wishId);
-                    wishData.append('category', 'Resepsi');
+                    const wishPayload = {
+                        action: 'wish',
+                        name: name,
+                        comment: comment,
+                        attendance: attendanceMap[attendance] || attendance || '',
+                        date: new Date().toLocaleString(),
+                        id: wishId,
+                        category: 'Resepsi'
+                    };
 
                     fetch(SHEET_SCRIPT_URL, {
                         method: 'POST',
                         mode: 'no-cors',
-                        body: wishData
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(wishPayload)
                     }).then(() => console.log('Wish sent to sheet'))
                         .catch(err => console.error('Wish sheet error:', err));
                     // ---------------------------------
