@@ -96,7 +96,7 @@ window.MockBackend = {
     },
     formatCommentItems: function (wishes) {
         const urlParams = new URLSearchParams(window.location.search);
-        const adminKey = 'ardella123';
+        const adminKey = 'krisna123';
         const isAdmin = urlParams.get('admin') === adminKey || urlParams.get('Admin') === adminKey || urlParams.get('admin') === 'true' || urlParams.get('Admin') === 'true';
 
         if (!wishes || wishes.length === 0) {
@@ -107,7 +107,7 @@ window.MockBackend = {
             return msg;
         }
 
-        // Change 'ardella123' to your preferred password
+        // Change 'krisna123' to your preferred password
 
         // Add visual indicator for Admin Mode
         if (isAdmin && !document.getElementById('admin-badge')) {

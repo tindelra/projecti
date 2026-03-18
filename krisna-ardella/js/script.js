@@ -76,7 +76,7 @@ function initCountdown() {
 function initGuestName() {
     const urlParams = new URLSearchParams(window.location.search);
     const guestName = urlParams.get('to');
-    const adminKey = 'ardella123';
+    const adminKey = 'krisna123';
     const isAdmin = urlParams.get('admin') === adminKey || urlParams.get('Admin') === adminKey || urlParams.get('admin') === 'true' || urlParams.get('Admin') === 'true';
 
     if (isAdmin || guestName) {
